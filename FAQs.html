@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs - IEEE Computer Society Student Chapter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <style>
+        /* CSS Variables for Light Mode */
+        :root {
+            --trace-color: #00629B; /* Blue for light mode */
+            --trace-glow: 0 0 15px 3px var(--trace-color);
+            --trace-duration: 4s; /* Total animation duration */
+            --primary-color: #00629B;
+            --secondary-color: #FF6900;
+            --accent-color: #5C87A2;
+            --light-color: #F8F9FA;
+            --dark-color: #212529;
+            --text-color: #333333;
+            --text-light: #6C757D;
+            --bg-color: #FFFFFF;
+            --card-bg: #FFFFFF;
+            --border-color: #E9ECEF;
+            --footer-bg: #212529;
+            --footer-text: #FFFFFF;
+            --section-padding: 80px 0;
+            --shadow-3d: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transform-3d: perspective(1000px);
+            --particle-color: rgba(0, 98, 155, 0.5);
+            --particle-size: 3;
+            --particle-speed: 1;
+            --connection-distance: 100;
+            --connection-color: rgba(0, 98, 155, 0.2);
+        }
+        
+        /* Orange 3D Theme */
+        body.orange-3d-theme {
+            --trace-color: #FF6900; /* Orange for orange mode */
+            --trace-glow: 0 0 20px 5px var(--trace-color);
+            --primary-color: #FF6B35;
+            --secondary-color: #F7931E;
+            --accent-color: #FFAB00;
+            --light-color: #FFF8F0;
+            --dark-color: #1A1A1A;
+            --text-color: #FFFFFF;
+            --text-light: #FFD8A8;
+            --bg-color: #0D0D0D;
+            --card-bg: rgba(255, 107, 53, 0.1);
+            --border-color: rgba(255, 107, 53, 0.3);
+            --footer-bg: #000000;
+            --footer-text: #FFFFFF;
+            --shadow-3d: 0 15px 30px rgba(255, 107, 53, 0.3);
+            --transform-3d: perspective(1000px) rotateX(5deg);
+            --particle-color: rgba(255, 107, 53, 0.8);
+            --particle-size: 4;
+            --particle-speed: 1.5;
+            --connection-distance: 120;
+            --connection-color: rgba(255, 107, 53, 0.4);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: all 0.5s ease;
+            padding-top: 80px;
+        }
+        
+        /* Add this to your CSS */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        body.loaded::before {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 3D Particle Background Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        /* Theme Toggle in Header */
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
+        }
+        
+        .theme-toggle {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: var(--shadow-3d);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
+        }
+        
+        body.orange-3d-theme .theme-toggle {
+            background: var(--secondary-color);
+        }
+        
+        /* 3D Effects for Orange Theme */
+        body.orange-3d-theme .card-3d {
+            transform: var(--transform-3d);
+            box-shadow: var(--shadow-3d);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        body.orange-3d-theme .card-3d:hover {
+            transform: perspective(1000px) rotateX(10deg) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.5);
+        }
+        
+        body.orange-3d-theme .btn-3d {
+            background:  var(--primary-color);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        body.orange-3d-theme .btn-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+        
+        body.orange-3d-theme .btn-3d:hover::before {
+            left: 100%;
+        }
+        
+        body.orange-3d-theme .btn-3d:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.6);
+        }
+        
+        /* Navbar */
+        .navbar {
+            background-color: var(--bg-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        
+        body.orange-3d-theme .navbar {
+            background-color: rgba(13, 13, 13, 0.9);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand img {
+            max-width: 180px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link {
+            color: var(--dark-color) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        body.orange-3d-theme .nav-link {
+            color: var(--text-color) !important;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .navbar-social {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .navbar-social a {
+            color: var(--dark-color);
+            font-size: 1.2rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        
+        body.orange-3d-theme .navbar-social a {
+            color: var(--text-color);
+        }
+        
+        .navbar-social a:hover {
+            color: var(--primary-color);
+            transform: scale(1.2);
+        }
+        
+        body.orange-3d-theme .navbar-social a:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Hero Section */
+        .faq-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 320px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body.orange-3d-theme .faq-hero {
+            background: linear-gradient(135deg, #FF6B35, #F7931E, #FFAB00);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .faq-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            /* Added for letter animation */
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid white;
+            animation: typing 3.5s steps(30, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        /* Typewriter effect for FAQ title */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: white; }
+        }
+        
+        /* Letter-by-letter animation */
+        .faq-hero h1 span {
+            opacity: 0;
+            display: inline-block;
+            animation: fadeInLetter 0.1s ease forwards;
+        }
+        
+        @keyframes fadeInLetter {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        body.orange-3d-theme .faq-hero h1 {
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .faq-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out 0.2s;
+            animation-fill-mode: both;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes flipIn {
+            from {
+                opacity: 0;
+                transform: perspective(400px) rotateY(90deg);
+            }
+            to {
+                opacity: 1;
+                transform: perspective(400px) rotateY(0deg);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* Section Styles */
+        section {
+            padding: var(--section-padding);
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            position: relative;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        body.orange-3d-theme .section-title h2 {
+            color: var(--secondary-color);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        body.orange-3d-theme .section-title h2::after {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            width: 120px;
+        }
+        
+        .section-title p {
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            padding: var(--section-padding);
+        }
+        
+        body.orange-3d-theme .faq-section {
+            background-color: rgba(255, 107, 53, 0.05);
+        }
+        
+        /* Modern FAQ Categories */
+        .faq-categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        
+        .faq-category {
+            padding: 12px 24px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .faq-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: var(--secondary-color);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        
+        .faq-category:hover::before {
+            width: 100%;
+        }
+        
+        .faq-category:hover {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .faq-category.active {
+            background:  var(--primary-color);
+            color: white;
+            border-color: transparent;
+        }
+        
+        body.orange-3d-theme .faq-category {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--border-color);
+        }
+        
+        body.orange-3d-theme .faq-category:hover {
+            transform: translateY(-5px) rotateX(5deg);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.6);
+        }
+        
+        /* Modern Search Box */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 50px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 18px 25px;
+            padding-left: 55px;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        body.orange-3d-theme .search-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--border-color);
+            color: var(--text-color);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            outline: none;
+            transform: translateY(-2px);
+        }
+        
+        body.orange-3d-theme .search-input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+        
+        body.orange-3d-theme .search-icon {
+            color: var(--accent-color);
+        }
+        
+        /* Modern FAQ Accordion */
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            margin-bottom: 25px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+            background: var(--card-bg);
+            position: relative;
+        }
+        
+        body.orange-3d-theme .faq-item {
+            background-color: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-3d);
+        }
+        
+        .faq-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.orange-3d-theme .faq-item:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.4);
+        }
+        
+        .faq-question {
+            padding: 25px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-color);
+            background: var(--card-bg);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        body.orange-3d-theme .faq-question {
+            background-color: rgba(255, 107, 53, 0.05);
+            color: var(--text-color);
+        }
+        
+        .faq-question::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background:  var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .faq-item.active .faq-question::before {
+            width: 100%;
+            opacity: 0.1;
+        }
+        
+        .faq-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background:  var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 15px;
+        }
+        
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            padding: 0 30px;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        body.orange-3d-theme .faq-answer {
+            background-color: rgba(255, 107, 53, 0.05);
+            color: var(--text-color);
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 30px 25px;
+        }
+        
+        .faq-answer p {
+            padding: 20px 0;
+            margin: 0;
+            line-height: 1.7;
+        }
+        
+        /* Category tags */
+        .faq-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .faq-tag {
+            padding: 4px 12px;
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        body.orange-3d-theme .faq-tag {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+        }
+        
+        /* Still Have Questions */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        body.orange-3d-theme .glass {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            box-shadow: var(--shadow-3d);
+        }
+        
+        .btn-glow {
+            background:  var(--primary-color);
+            border: none;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.orange-3d-theme .btn-glow {
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        .btn-glow:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        body.orange-3d-theme .btn-glow:hover {
+            background: var(--secondary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.6);
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background:  var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        
+        body.orange-3d-theme .back-to-top {
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+        
+        body.orange-3d-theme .back-to-top:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.6);
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #212529 0%, #00629B 50%, #f8f9fa 100%);
+            color: var(--footer-text);
+            padding: 50px 0 20px;
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        body.orange-3d-theme footer {
+            background: linear-gradient(135deg, #000000 0%, #FF6B35 50%, #0A0A0A 100%);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+        
+        .footer-logo {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-logo img {
+            max-width: 180px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-logo p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        body.orange-3d-theme .footer-social a {
+            background-color: rgba(255, 107, 53, 0.2);
+        }
+        
+        .footer-social a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .footer-links {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-links h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        body.orange-3d-theme .footer-links h4 {
+            color: var(--secondary-color);
+        }
+        
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary-color);
+        }
+        
+        body.orange-3d-theme .footer-links h4::after {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+            display: inline-block;
+        }
+        
+        body.orange-3d-theme .footer-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-contact {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-contact h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        body.orange-3d-theme .footer-contact h4 {
+            color: var(--secondary-color);
+        }
+        
+        .footer-contact h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary-color);
+        }
+        
+        body.orange-3d-theme .footer-contact h4::after {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info-item i {
+            color: var(--secondary-color);
+            margin-top: 5px;
+        }
+        
+        body.orange-3d-theme .contact-info-item i {
+            color: var(--accent-color);
+        }
+        
+        .contact-info-item p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 3D Floating Elements for Orange Theme */
+        body.orange-3d-theme .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.8), rgba(255, 107, 53, 0.2));
+            filter: blur(5px);
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        .floating-1 {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-2 {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .floating-3 {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .faq-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .faq-category {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-nav {
+                text-align: center;
+                margin-top: 10px;
+            }
+            
+            .navbar-nav .nav-item {
+                margin: 5px 0;
+            }
+            
+            .faq-hero {
+                padding: 80px 0;
+            }
+            
+            .faq-hero h1 {
+                font-size: 2rem;
+            }
+            
+            section {
+                padding: 60px 0;
+            }
+            
+            .section-title {
+                margin-bottom: 40px;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .faq-question {
+                padding: 20px 25px;
+                font-size: 1rem;
+            }
+            
+            .faq-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .faq-hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .faq-hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.5rem;
+            }
+            
+            .faq-categories {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .faq-category {
+                width: 80%;
+            }
+            
+            .faq-question {
+                padding: 15px 20px;
+                font-size: 0.95rem;
+            }
+            
+            .faq-answer {
+                padding: 0 20px;
+            }
+            
+            .faq-item.active .faq-answer {
+                padding: 0 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Particle Background Canvas -->
+    <canvas id="particle-canvas"></canvas>
+    
+    <!-- 3D Floating Elements (visible only in orange 3D theme) -->
+    <div class="floating-element floating-1" style="display: none;"></div>
+    <div class="floating-element floating-2" style="display: none;"></div>
+    <div class="floating-element floating-3" style="display: none;"></div>    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/CS LOGO-01.png" alt="IEEE CS Logo">
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#Committee">Committee</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#connect">Connect Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="faqs.html">FAQs</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="d-flex align-items-center">
+                <div class="navbar-social">
+                    <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+                
+                <div class="theme-toggle-container">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-palette"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- FAQ Hero Section -->
+    <section class="faq-hero">
+        <div class="container">
+            <h1 id="faq-title">Frequently Asked Questions</h1>
+            <p>Find answers to common questions about our IEEE Computer Society Student Chapter</p>
+        </div>
+    </section>
+    
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>FAQs</h2>
+                <p>Find answers to common questions about our chapter, membership, events, and more.</p>
+            </div>
+            
+            <!-- Modern FAQ Categories -->
+            <div class="faq-categories">
+                <div class="faq-category active" data-category="all">All</div>
+                <div class="faq-category" data-category="membership">Membership</div>
+                <div class="faq-category" data-category="events">Events</div>
+                <div class="faq-category" data-category="benefits">Benefits</div>
+                <div class="faq-category" data-category="technical">Technical</div>
+            </div>
+            
+            <!-- Modern Search Box -->
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for questions...">
+            </div>
+            
+            <!-- Modern FAQ Accordion -->
+            <div class="faq-container">
+                <div class="faq-item active" data-category="membership">
+                    <div class="faq-question">
+                        <span>How do I join the IEEE Computer Society Student Chapter?</span>
+                        <div class="faq-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>To join our chapter, simply fill out the contact form on our Connect Us page or reach out to our membership coordinator at membership@ieeecss.org. There's a nominal membership fee that provides access to all our events, workshops, and resources. New members are welcome throughout the year!</p>
+                        <div class="faq-tags">
+                            <span class="faq-tag">Membership</span>
+                            <span class="faq-tag">Joining Process</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="events">
+                    <div class="faq-question">
+                        <span>What events and activities do you organize?</span>
+                        <div class="faq-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We organize a variety of events including technical workshops, guest lectures from industry experts, coding competitions, hackathons, networking events, and social gatherings. We also host the annual "Future of AI" conference and provide mentorship programs for students interested in various tech domains.</p>
+                        <div class="faq-tags">
+                            <span class="faq-tag">Events</span>
+                            <span class="faq-tag">Activities</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="membership">
+                    <div class="faq-question">
+                        <span>Do I need to be an IEEE member to join?</span>
+                        <div class="faq-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No, you don't need to be an IEEE member to join our Computer Society Student Chapter. However, IEEE members receive additional benefits and discounts on our events. We welcome all students interested in computer science and technology, regardless of their IEEE membership status.</p>
+                        <div class="faq-tags">
+                            <span class="faq-tag">Membership</span>
+                            <span class="faq-tag">Requirements</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="benefits">
+                    <div class="faq-question">
+                        <span>How can I get involved as a volunteer?</span>
+                        <div class="faq-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We're always looking for passionate volunteers! You can volunteer for event organization, content creation, social media management, or technical support. Contact our volunteer coordinator at volunteer@ieeecss.org or attend our monthly volunteer meetings to learn about current opportunities.</p>
+                        <div class="faq-tags">
+                            <span class="faq-tag">Volunteering</span>
+                            <span class="faq-tag">Opportunities</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-category="benefits">
+                    <div class="faq-question">
+                        <span>What benefits do I get from joining?</span>
+                        <div class="faq-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Members enjoy access to exclusive workshops, networking opportunities with industry professionals, mentorship programs, internship referrals, certification courses at discounted rates, and the chance to develop leadership skills by participating in our committees. You'll also become part of a global community of computing professionals.</p>
+                        <div class="faq-tags">
+                            <span class="faq-tag">Benefits</span>
+                            <span class="faq-tag">Advantages</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Still Have Questions -->
+            <div class="text-center mt-5">
+                <div class="glass">
+                    <h3>Still have questions?</h3>
+                    <p>Feel free to reach out to us directly for more information.</p>
+                </div>
+                <a href="index.html#connect" class="btn btn-glow mt-3">Contact Us</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="images/CS LOGO-01.png" alt="IEEE Computer Society">
+                    <p>Empowering the next generation of computing professionals through education, innovation, and collaboration.</p>
+                    <div class="footer-social">
+                        <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#Committee">Committee</a></li>
+                        <li><a href="index.html#blog">Blog</a></li>
+                        <li><a href="index.html#connect">Connect Us</a></li>
+                        <li><a href="faqs.html">FAQs</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <div class="contact-info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>Tafila, Jordan</p>
+                    </div>
+                    <div class="contact-info-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>ieeecsttu@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 IEEE Computer Society Student Chapter, TTU. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        // Canvas-based 3D particle background
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        setCanvasSize();
+        window.addEventListener('resize', setCanvasSize);
+        
+        // Enhanced Particle class with 3D effects
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.color = getComputedStyle(document.documentElement).getPropertyValue('--particle-color');
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Bounce off edges
+                if (this.x < 0 || this.x > canvas.width) {
+                    this.speedX = -this.speedX;
+                }
+                if (this.y < 0 || this.y > canvas.height) {
+                    this.speedY = -this.speedY;
+                }
+            }
+            
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        // Create particles
+        const particles = [];
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+        
+        // Draw connections between particles
+        function drawConnections() {
+            const connectionDistance = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--connection-distance'));
+            const connectionColor = getComputedStyle(document.documentElement).getPropertyValue('--connection-color');
+            
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < connectionDistance) {
+                        const opacity = 1 - distance / connectionDistance;
+                        ctx.strokeStyle = connectionColor.replace('0.2', opacity * 0.2);
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw particles
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            // Draw connections
+            drawConnections();
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const floatingElements = document.querySelectorAll('.floating-element');
+        
+        // Function to update logos based on current theme
+        function updateLogos() {
+            const navbarLogo = document.querySelector('.navbar-brand img');
+            const footerLogo = document.querySelector('.footer-logo img');
+            const isOrangeTheme = document.body.classList.contains('orange-3d-theme');
+            
+            if (navbarLogo) {
+                navbarLogo.src = isOrangeTheme ? 'images/CS LOGO Orange-01.png' : 'images/CS LOGO-01.png';
+            }
+            
+            if (footerLogo) {
+                footerLogo.src = isOrangeTheme ? 'images/CS LOGO Orange-01.png' : 'images/CS LOGO-01.png';
+            }
+        }
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'orange') {
+            body.classList.add('orange-3d-theme');
+            updateLogos();
+            
+            // Show floating elements if orange theme
+            floatingElements.forEach(element => {
+                element.style.display = 'block';
+            });
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('orange-3d-theme');
+            
+            // Save theme preference
+            if (body.classList.contains('orange-3d-theme')) {
+                localStorage.setItem('theme', 'orange');
+            } else {
+                localStorage.setItem('theme', 'default');
+            }
+            
+            // Update particle colors based on theme
+            particles.forEach(particle => {
+                particle.color = getComputedStyle(document.documentElement).getPropertyValue('--particle-color');
+            });
+            
+            // Show/hide floating elements based on theme
+            if (body.classList.contains('orange-3d-theme')) {
+                floatingElements.forEach(element => {
+                    element.style.display = 'block';
+                });
+            } else {
+                floatingElements.forEach(element => {
+                    element.style.display = 'none';
+                });
+            }
+            
+            // Update logos after theme change
+            updateLogos();
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const navbarCollapse = document.querySelector('.navbar-collapse');
+                    if (navbarCollapse.classList.contains('show')) {
+                        navbarCollapse.classList.remove('show');
+                    }
+                }
+            });
+        });
+        
+        // Back to top button
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Modern FAQ Accordion functionality
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                // Close all other items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item
+                item.classList.toggle('active');
+            });
+        });
+        
+        // FAQ category filtering
+        const faqCategories = document.querySelectorAll('.faq-category');
+        
+        faqCategories.forEach(category => {
+            category.addEventListener('click', function() {
+                // Remove active class from all categories
+                faqCategories.forEach(cat => cat.classList.remove('active'));
+                
+                // Add active class to clicked category
+                this.classList.add('active');
+                
+                const categoryValue = this.getAttribute('data-category');
+                
+                // Filter FAQ items
+                faqItems.forEach(item => {
+                    if (categoryValue === 'all' || item.getAttribute('data-category') === categoryValue) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            faqItems.forEach(item => {
+                const faqText = item.textContent.toLowerCase();
+                
+                if (faqText.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+        
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+        
+        // Function to create inscription effect
+        function createInscriptionEffect() {
+            const faqTitle = document.getElementById('faq-title');
+            const originalText = faqTitle.textContent;
+            
+            // Clear the existing content
+            faqTitle.textContent = '';
+            
+            // Create a span for each character with a random character initially
+            const characters = originalText.split('');
+            const spans = [];
+            
+            characters.forEach((char, index) => {
+                const span = document.createElement('span');
+                
+                // If it's a space, keep it as space
+                if (char === ' ') {
+                    span.textContent = ' ';
+                } else {
+                    // Start with a random character
+                    span.textContent = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+                }
+                
+                span.style.opacity = '0';
+                faqTitle.appendChild(span);
+                spans.push(span);
+            });
+            
+            // Animate each character to reveal the correct one
+            spans.forEach((span, index) => {
+                setTimeout(() => {
+                    // First, make it visible
+                    span.style.opacity = '1';
+                    
+                    // Then, change the character rapidly until we get to the correct one
+                    const correctChar = characters[index];
+                    if (correctChar !== ' ') {
+                        let counter = 0;
+                        const maxIterations = 10;
+                        const interval = setInterval(() => {
+                            span.textContent = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+                            counter++;
+                            
+                            if (counter >= maxIterations) {
+                                clearInterval(interval);
+                                span.textContent = correctChar;
+                            }
+                        }, 50);
+                    }
+                }, index * 100); // Stagger the animation
+            });
+        }
+        
+        // Add this to your JavaScript
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+            
+            // Create inscription effect for FAQ title
+            createInscriptionEffect();
+        });
+        
+        // Also handle page reload specifically
+        window.addEventListener('beforeunload', () => {
+            // This will help ensure the animation runs again on reload
+            sessionStorage.setItem('isReloading', 'true');
+        });
+        
+        // Check if page is reloading
+        if (sessionStorage.getItem('isReloading')) {
+            sessionStorage.removeItem('isReloading');
+            // The load event will handle the animation
+        }
+    </script>
+</body>
+</html>

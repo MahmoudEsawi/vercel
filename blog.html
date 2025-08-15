@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - IEEE Computer Society Student Chapter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00629B;
+            --secondary-color: #FF6900;
+            --accent-color: #5C87A2;
+            --light-color: #F8F9FA;
+            --dark-color: #212529;
+            --text-color: #333333;
+            --text-light: #6C757D;
+            --bg-color: #FFFFFF;
+            --card-bg: #FFFFFF;
+            --border-color: #E9ECEF;
+            --footer-bg: #212529;
+            --footer-text: #FFFFFF;
+            --section-padding: 80px 0;
+            --shadow-3d: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transform-3d: perspective(1000px);
+            --particle-color: rgba(0, 98, 155, 0.5);
+            --particle-size: 3;
+            --particle-speed: 1;
+            --connection-distance: 100;
+            --connection-color: rgba(0, 98, 155, 0.2);
+        }
+        /* Orange 3D Theme */
+        body.orange-3d-theme {
+            --primary-color: #FF6B35;
+            --secondary-color: #F7931E;
+            --accent-color: #FFAB00;
+            --light-color: #FFF8F0;
+            --dark-color: #1A1A1A;
+            --text-color: #FFFFFF;
+            --text-light: #FFD8A8;
+            --bg-color: #0D0D0D;
+            --card-bg: rgba(255, 107, 53, 0.1);
+            --border-color: rgba(255, 107, 53, 0.3);
+            --footer-bg: #0A0A0A;
+            --footer-text: #FFFFFF;
+            --shadow-3d: 0 15px 30px rgba(255, 107, 53, 0.3);
+            --transform-3d: perspective(1000px) rotateX(5deg);
+            --particle-color: rgba(255, 107, 53, 0.8);
+            --particle-size: 4;
+            --particle-speed: 1.5;
+            --connection-distance: 120;
+            --connection-color: rgba(255, 107, 53, 0.4);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: all 0.5s ease;
+        }
+        /* 3D Particle Background Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        /* Theme Toggle in Header */
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
+        }
+        .theme-toggle {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: var(--shadow-3d);
+            transition: all 0.3s ease;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
+        }
+        body.orange-3d-theme .theme-toggle {
+            background: var(--secondary-color);
+        }
+        /* 3D Effects for Orange Theme */
+        body.orange-3d-theme .card-3d {
+            transform: var(--transform-3d);
+            box-shadow: var(--shadow-3d);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        body.orange-3d-theme .card-3d:hover {
+            transform: perspective(1000px) rotateX(10deg) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.5);
+        }
+        body.orange-3d-theme .btn-3d {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        body.orange-3d-theme .btn-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+        body.orange-3d-theme .btn-3d:hover::before {
+            left: 100%;
+        }
+        body.orange-3d-theme .btn-3d:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.6);
+        }
+        /* Navbar */
+        .navbar {
+            background-color: var(--bg-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 999;
+        }
+        body.orange-3d-theme .navbar {
+            background-color: rgba(13, 13, 13, 0.9);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand img {
+            max-width: 180px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        .nav-link {
+            color: var(--dark-color) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        body.orange-3d-theme .nav-link {
+            color: var(--text-color) !important;
+        }
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .navbar-social {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .navbar-social a {
+            color: var(--dark-color);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        body.orange-3d-theme .navbar-social a {
+            color: var(--text-color);
+        }
+        .navbar-social a:hover {
+            color: var(--primary-color);
+        }
+        /* Blog Hero Section */
+        .blog-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 400px 0 ;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        body.orange-3d-theme .blog-hero {
+            background: linear-gradient(135deg, #FF6B35, #F7931E, #FFAB00);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .blog-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out;
+        }
+        body.orange-3d-theme .blog-hero h1 {
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        .blog-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out 0.2s;
+            animation-fill-mode: both;
+        }
+        /* Blog Section */
+        .blog-section {
+            padding: 80px 0;
+            position: relative;
+            z-index: 1;
+        }
+        /* Section Separator */
+        .section-separator {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+            margin: 40px 0;
+            width: 100%;
+        }
+        body.orange-3d-theme .section-separator {
+            background: linear-gradient(90deg, transparent, var(--secondary-color), transparent);
+        }
+        /* Blog Filters */
+        .blog-filters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            gap: 20px;
+        }
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .category-btn {
+            background-color: var(--light-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        body.orange-3d-theme .category-btn {
+            background-color: rgba(255, 107, 53, 0.1);
+            border-color: var(--border-color);
+            color: var(--text-color);
+        }
+        .category-btn:hover, .category-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        body.orange-3d-theme .category-btn:hover, 
+        body.orange-3d-theme .category-btn.active {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        body.orange-3d-theme .search-box input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--border-color);
+            color: var(--text-color);
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 98, 155, 0.1);
+        }
+        body.orange-3d-theme .search-box input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+        }
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 5px;
+        }
+        body.orange-3d-theme .search-box button {
+            color: var(--secondary-color);
+        }
+        /* Blog Cards */
+        .blog-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .blog-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        body.orange-3d-theme .blog-card {
+            background-color: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-3d);
+        }
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        body.orange-3d-theme .blog-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.5);
+        }
+        .blog-card-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .new-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .blog-card-content {
+            padding: 25px;
+        }
+        .blog-card-category {
+            display: inline-block;
+            background-color: rgba(0, 98, 155, 0.1);
+            color: var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        body.orange-3d-theme .blog-card-category {
+            background-color: rgba(255, 107, 53, 0.2);
+            color: var(--secondary-color);
+        }
+        .blog-card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        body.orange-3d-theme .blog-card-title {
+            color: var(--secondary-color);
+        }
+        .blog-card-excerpt {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .blog-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        .blog-card-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .author-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .blog-card-date {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        /* Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .pagination {
+            display: flex;
+            gap: 10px;
+        }
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 0 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+        body.orange-3d-theme .page-link {
+            background-color: rgba(255, 107, 53, 0.1);
+            color: var(--text-color);
+        }
+        .page-link:hover, .page-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        body.orange-3d-theme .page-link:hover, 
+        body.orange-3d-theme .page-link.active {
+            background-color: var(--secondary-color);
+        }
+        .page-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        /* Blog Detail Modal */
+        .blog-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+        .blog-modal-content {
+            background-color: var(--card-bg);
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            margin-top: 80px;
+        }
+        body.orange-3d-theme .blog-modal-content {
+            background-color: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-3d);
+        }
+        .modal-close {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        .modal-close:hover {
+            background-color: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+        }
+        .blog-modal-image {
+            width: 100%;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+        }
+        .blog-modal-body {
+            padding: 40px;
+        }
+        .blog-modal-category {
+            display: inline-block;
+            background-color: rgba(0, 98, 155, 0.1);
+            color: var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        body.orange-3d-theme .blog-modal-category {
+            background-color: rgba(255, 107, 53, 0.2);
+            color: var(--secondary-color);
+        }
+        .blog-modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        body.orange-3d-theme .blog-modal-title {
+            color: var(--secondary-color);
+        }
+        .blog-modal-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .blog-modal-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .author-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        body.orange-3d-theme .author-name {
+            color: var(--secondary-color);
+        }
+        .author-title {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        .blog-modal-date {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-light);
+        }
+        .blog-modal-content-text {
+            color: var(--text-color);
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        .blog-modal-gallery {
+            margin-top: 30px;
+        }
+        .blog-modal-gallery h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        body.orange-3d-theme .blog-modal-gallery h3 {
+            color: var(--secondary-color);
+        }
+        .gallery-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .gallery-image {
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* 3D Floating Elements for Orange Theme */
+        body.orange-3d-theme .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.8), rgba(255, 107, 53, 0.2));
+            filter: blur(5px);
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        .floating-1 {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        .floating-2 {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        .floating-3 {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .blog-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .blog-container {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+        @media (max-width: 768px) {
+            .navbar-nav {
+                text-align: center;
+                margin-top: 10px;
+            }
+            
+            .navbar-nav .nav-item {
+                margin: 5px 0;
+            }
+            
+            .blog-hero {
+                padding: 300px 0 60px;
+            }
+            
+            .blog-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .blog-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .blog-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .blog-modal-body {
+                padding: 30px 20px;
+            }
+            
+            .blog-modal-title {
+                font-size: 1.5rem;
+            }
+            
+            .gallery-images {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .pagination {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .page-link {
+                min-width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .modal-close {
+                top: 70px;
+            }
+        }
+        @media (max-width: 576px) {
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .blog-hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .blog-hero p {
+                font-size: 1rem;
+            }
+            
+            .blog-modal-image {
+                height: 250px;
+            }
+            
+            .page-info {
+                display: none;
+            }
+            
+            .modal-close {
+                top: 60px;
+            }
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #212529 0%, #00629B 50%, #f8f9fa 100%);
+            color: var(--footer-text);
+            padding: 50px 0 20px;
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+        body.orange-3d-theme footer {
+            background: linear-gradient(135deg, #0A0A0A 0%, #FF6B35 50%, #1A1A1A 100%);
+        }
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+        .footer-logo {
+            flex: 1;
+            min-width: 250px;
+        }
+        .footer-logo img {
+            max-width: 180px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .footer-logo p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+        .footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        body.orange-3d-theme .footer-social a {
+            background-color: rgba(255, 107, 53, 0.2);
+        }
+        .footer-social a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        .footer-links {
+            flex: 1;
+            min-width: 200px;
+        }
+        .footer-links h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        body.orange-3d-theme .footer-links h4 {
+            color: var(--secondary-color);
+        }
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary-color);
+        }
+        body.orange-3d-theme .footer-links h4::after {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+        }
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+            display: inline-block;
+        }
+        body.orange-3d-theme .footer-links a:hover {
+            color: var(--accent-color);
+        }
+        .footer-contact {
+            flex: 1;
+            min-width: 250px;
+        }
+        .footer-contact h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        body.orange-3d-theme .footer-contact h4 {
+            color: var(--secondary-color);
+        }
+        .footer-contact h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary-color);
+        }
+        body.orange-3d-theme .footer-contact h4::after {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .contact-info-item i {
+            color: var(--secondary-color);
+            margin-top: 5px;
+        }
+        body.orange-3d-theme .contact-info-item i {
+            color: var(--accent-color);
+        }
+        .contact-info-item p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Particle Background Canvas -->
+    <canvas id="particle-canvas"></canvas>
+    
+    <!-- 3D Floating Elements (visible only in orange 3D theme) -->
+    <div class="floating-element floating-1" style="display: none;"></div>
+    <div class="floating-element floating-2" style="display: none;"></div>
+    <div class="floating-element floating-3" style="display: none;"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/CS LOGO-01.png" alt="IEEE Computer Society" id="navbar-logo">
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#events">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#Committee">Committee</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="blog.html">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="FAQs.html">FAQs</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="d-flex align-items-center">
+                <div class="navbar-social">
+                    <a href="https://www.instagram.com" target="_blank" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.facebook.com/share/1Ant8gdz4W/
+                    " target="_blank" aria-label="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href= "https://www.linkedin.com/company/ieee-computer-society-ttu/" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+                
+                <div class="theme-toggle-container">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-palette"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Blog Hero Section -->
+    <section class="blog-hero">
+        <div class="container">
+            <h1>Our Blog</h1>
+            <p>Stay updated with the latest news, events, and insights from our IEEE Computer Society Student Chapter.</p>
+        </div>
+    </section>
+    
+    <!-- Section Separator -->
+    <div class="section-separator"></div>
+    
+    <!-- Blog Section -->
+    <section class="blog-section">
+        <div class="container">
+            <!-- Blog Filters -->
+            <div class="blog-filters">
+                <div class="category-filter">
+                    <button class="category-btn active" data-category="all">All</button>
+                    <button class="category-btn" data-category="events">Events</button>
+                    <button class="category-btn" data-category="technology">Technology</button>
+                    <button class="category-btn" data-category="education">Education</button>
+                    <button class="category-btn" data-category="achievements">Achievements</button>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search blog posts...">
+                    <button type="button" id="searchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Section Separator -->
+            <div class="section-separator"></div>
+<!-- Blog Cards -->
+<div class="blog-container" id="blogContainer">
+    <!-- Blog Card 1 -->
+    <div class="blog-card" data-category="technology" data-id="1">
+      <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80');">
+        <span class="new-badge">New</span>
+      </div>
+      <div class="blog-card-content">
+        <span class="blog-card-category">Technology</span>
+        <h3 class="blog-card-title">How Artificial Intelligence is Transforming Our World</h3>
+        <p class="blog-card-excerpt">Artificial Intelligence is revolutionizing industries by optimizing processes, improving decision-making, and enabling new capabilities across healthcare, finance, retail, and more.</p>
+        <div class="blog-card-meta">
+          <div class="blog-card-author">
+            <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Sarah Malik" class="author-avatar">
+            <span>Sarah Malik</span>
+          </div>
+          <div class="blog-card-date">
+            <i class="far fa-calendar"></i>
+            <span>Aug 5, 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Blog Card 2 -->
+    <div class="blog-card" data-category="technology" data-id="2">
+      <div class="blog-card-image" style="background-image: url('https://miro.medium.com/v2/resize:fit:1155/0*G-5F38rBStjlMNwd.png');">
+        <span class="new-badge">New</span>
+      </div>
+      <div class="blog-card-content">
+        <span class="blog-card-category">Technology, Education</span>
+        <h3 class="blog-card-title">Boost Productivity: Getting Started with n8n for Workflow Automation</h3>
+        <p class="blog-card-excerpt">Learn how to automate repetitive tasks with n8n, an open-source tool that connects apps and services to save time and reduce errors.</p>
+        <div class="blog-card-meta">
+          <div class="blog-card-author">
+            <img src="https://randomuser.me/api/portraits/men/44.jpg" alt="Omar Khaled" class="author-avatar">
+            <span>Mahmoud Al-Esawi</span>
+          </div>
+          <div class="blog-card-date">
+            <i class="far fa-calendar"></i>
+            <span>Aug 11, 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Blog Card 3 -->
+    <div class="blog-card" data-category="all technology" data-id="3">
+      <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1542831371-d531d36971e6?auto=format&fit=crop&w=600&q=80');"></div>
+      <div class="blog-card-content">
+        <span class="blog-card-category">All, Technology</span>
+        <h3 class="blog-card-title">Top Technology Trends to Watch in 2025</h3>
+        <p class="blog-card-excerpt">Explore the biggest technology trends of 2025, from quantum computing to sustainable tech and AI democratization.</p>
+        <div class="blog-card-meta">
+          <div class="blog-card-author">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Lina Farah" class="author-avatar">
+            <span>Lina Farah</span>
+          </div>
+          <div class="blog-card-date">
+            <i class="far fa-calendar"></i>
+            <span>Aug 1, 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Blog Card 4 -->
+    <div class="blog-card" data-category="education" data-id="4">
+      <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1596495577886-d920f1e24613?auto=format&fit=crop&w=600&q=80');"></div>
+      <div class="blog-card-content">
+        <span class="blog-card-category">Education</span>
+        <h3 class="blog-card-title">Tips for Effective Online Learning</h3>
+        <p class="blog-card-excerpt">Strategies and techniques to maximize your learning potential in online courses and virtual classrooms.</p>
+        <div class="blog-card-meta">
+          <div class="blog-card-author">
+            <img src="https://randomuser.me/api/portraits/men/31.jpg" alt="Michael Chen" class="author-avatar">
+            <span>Michael Chen</span>
+          </div>
+          <div class="blog-card-date">
+            <i class="far fa-calendar"></i>
+            <span>Oct 28, 2023</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Blog Card 5 -->
+    <div class="blog-card" data-category="events" data-id="5">
+      <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80');"></div>
+      <div class="blog-card-content">
+        <span class="blog-card-category">Events</span>
+        <h3 class="blog-card-title">Annual Hackathon 2023: A Grand Success</h3>
+        <p class="blog-card-excerpt">Our annual hackathon brought together talented students from across the university to innovate and create solutions for real-world problems.</p>
+        <div class="blog-card-meta">
+          <div class="blog-card-author">
+            <img src="https://randomuser.me/api/portraits/women/75.jpg" alt="Alex Thompson" class="author-avatar">
+            <span>Alex Thompson</span>
+          </div>
+          <div class="blog-card-date">
+            <i class="far fa-calendar"></i>
+            <span>Nov 15, 2023</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Blog Card 6 -->
+    <div class="blog-card" data-category="achievements" data-id="6">
+      <div class="blog-card-image" style="background-image: url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=600&q=80');"></div>
+      <div class="blog-card-content">
+        <span class="blog-card-category">Achievements</span>
+        <h3 class="blog-card-title">Our Team Wins Regional Programming Contest</h3>
+        <p class="blog-card-excerpt">Celebrating the victory of our programming team at the regional ACM ICPC competition.</p>
+        <div class="blog-card-meta">
+          <div class="blog-card-author">
+            <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="Sarah Johnson" class="author-avatar">
+            <span>Sarah Johnson</span>
+          </div>
+          <div class="blog-card-date">
+            <i class="far fa-calendar"></i>
+            <span>Oct 15, 2023</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+            
+            <!-- Section Separator -->
+            <div class="section-separator"></div>
+            
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <div class="pagination">
+                    <button class="page-link" data-page="prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="page-link active" data-page="1">1</button>
+                    <button class="page-link" data-page="2">2</button>
+                    <button class="page-link" data-page="3">3</button>
+                    <span class="page-info">Page 1 of 3</span>
+                    <button class="page-link" data-page="next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Blog Detail Modal -->
+    <div class="blog-modal" id="blogModal">
+        <div class="blog-modal-content">
+            <div class="modal-close" id="modalClose">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="blog-modal-image" id="modalImage"></div>
+            <div class="blog-modal-body">
+                <span class="blog-modal-category" id="modalCategory"></span>
+                <h2 class="blog-modal-title" id="modalTitle"></h2>
+                <div class="blog-modal-meta">
+                    <div class="blog-modal-author">
+                        <img src="https://via.placeholder.com/50x50" alt="Author" class="author-avatar" id="modalAuthorAvatar">
+                        <div class="author-info">
+                            <span class="author-name" id="modalAuthorName"></span>
+                            <span class="author-title" id="modalAuthorTitle"></span>
+                        </div>
+                    </div>
+                    <div class="blog-modal-date">
+                        <i class="far fa-calendar"></i>
+                        <span id="modalDate"></span>
+                    </div>
+                </div>
+                <div class="blog-modal-content-text" id="modalContent">
+                    <!-- Content will be dynamically inserted here -->
+                </div>
+                <div class="blog-modal-gallery">
+                    <h3>Gallery</h3>
+                    <div class="gallery-images" id="modalGallery">
+                        <!-- Gallery images will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="images/CS LOGO-01.png" alt="IEEE Computer Society" id="footer-logo">
+                    <p>Advancing computing as a science and profession through student engagement and innovation.</p>
+                    <div class="footer-social">
+                        <a href="https://www.instagram.com/ieee.cs.ttu?igsh=MWhqbTRuY3RoN3p1MA==" target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/share/1Ant8gdz4W/
+                        " target="_blank" aria-label="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/company/ieee-computer-society-ttu/" target="_blank" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        
+                        
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#about">About Us</a></li>
+                        <li><a href="index.html#events">Events</a></li>
+                        <li><a href="index.html#Committee">Our Committee</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                
+                
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <div class="contact-info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>Tafila , Jordan </p>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>ieeecsttu@gmail.com</p>
+                    </div>
+                    <div class="contact-info-item">
+                        <i class="fas fa-clock"></i>
+                        <p>Monday - Friday: 9:00 AM - 5:00 PM</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 IEEE Computer Society Student Chapter. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Canvas-based 3D particle background
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        setCanvasSize();
+        window.addEventListener('resize', setCanvasSize);
+        
+        // Particle class
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.color = getComputedStyle(document.documentElement).getPropertyValue('--particle-color');
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Bounce off edges
+                if (this.x < 0 || this.x > canvas.width) {
+                    this.speedX = -this.speedX;
+                }
+                if (this.y < 0 || this.y > canvas.height) {
+                    this.speedY = -this.speedY;
+                }
+            }
+            
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        // Create particles
+        const particles = [];
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+        
+        // Draw connections between particles
+        function drawConnections() {
+            const connectionDistance = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--connection-distance'));
+            const connectionColor = getComputedStyle(document.documentElement).getPropertyValue('--connection-color');
+            
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < connectionDistance) {
+                        const opacity = 1 - distance / connectionDistance;
+                        ctx.strokeStyle = connectionColor.replace('0.2', opacity * 0.2);
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw particles
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            // Draw connections
+            drawConnections();
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const floatingElements = document.querySelectorAll('.floating-element');
+        const navbarLogo = document.getElementById('navbar-logo');
+        const footerLogo = document.getElementById('footer-logo');
+        
+        // Function to update logos based on theme
+        function updateLogos() {
+            if (body.classList.contains('orange-3d-theme')) {
+                // Orange theme
+                navbarLogo.src = 'images/CS LOGO Orange-01.png';
+                footerLogo.src = 'images/CS LOGO Orange-01.png';
+            } else {
+                // Light theme
+                navbarLogo.src = 'images/CS LOGO-01.png';
+                footerLogo.src = 'images/CS LOGO-01.png';
+            }
+        }
+        
+        // Initialize logos based on current theme
+        updateLogos();
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('orange-3d-theme');
+            
+            // Update particle colors based on theme
+            particles.forEach(particle => {
+                particle.color = getComputedStyle(document.documentElement).getPropertyValue('--particle-color');
+            });
+            
+            // Show/hide floating elements based on theme
+            if (body.classList.contains('orange-3d-theme')) {
+                floatingElements.forEach(element => {
+                    element.style.display = 'block';
+                });
+            } else {
+                floatingElements.forEach(element => {
+                    element.style.display = 'none';
+                });
+            }
+            
+            // Update logos based on theme
+            updateLogos();
+        });
+        
+        // Blog data
+        const blogData = {
+            1: {
+                title: "Annual Hackathon 2023: A Grand Success",
+                category: "Events",
+                author: "Alex Thompson",
+                authorTitle: "Events Coordinator",
+                date: "Nov 15, 2023",
+                image: "https://via.placeholder.com/900x400",
+                content: "Our annual hackathon, held from November 10-12, 2023, was a tremendous success with over 150 participants from various departments. The event brought together talented students to collaborate, innovate, and create solutions for real-world problems.<br><br>The hackathon featured five tracks: AI & Machine Learning, Web Development, Mobile Apps, IoT, and Open Innovation. Teams worked tirelessly for 48 hours to develop their projects, with mentors and industry experts providing guidance throughout the event.<br><br>The judging panel, comprised of faculty members and industry professionals, evaluated the projects based on innovation, technical complexity, and potential impact. The winners received cash prizes, internship opportunities, and recognition at the university level.<br><br>Beyond the competition, the hackathon provided a platform for networking, learning, and showcasing talent. Several participants have already received job offers and internship opportunities from sponsoring companies.",
+                gallery: [
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200"
+                ]
+            },
+            2: {
+                title: "Boost Productivity: Getting Started with n8n for Workflow Automation",
+                category: "Technology, Education",
+                author: "Mahmoud Al-Esawi",
+                authorTitle: "Automation Specialist" ,
+                date: "Jul 20, 2025",
+                image: "data:image/png;base64,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",
+                content: "n8n is an open-source workflow automation tool that allows you to connect various apps and services to automate repetitive tasks without needing to write code. Whether you're managing emails, syncing data between platforms, or building complex workflows, n8n empowers users to streamline their operations efficiently.<br><br>With its intuitive visual interface, n8n makes it easy to create workflows by dragging and dropping nodes representing different services. It supports a wide range of integrations including Google Sheets, Slack, GitHub, and more.<br><br>This workshop-style blog will guide you through setting up your first workflows, tips on managing triggers and actions, and best practices for scaling automation in your projects or organization.<br><br>Adopting n8n can significantly reduce manual workload, minimize errors, and improve productivity across various departments including marketing, sales, IT, and operations.",
+                gallery: [
+                    "https://images.unsplash.com/photo-1564869730869-301531e1e0e1?auto=format&fit=crop&w=300&q=80",
+                    "https://images.unsplash.com/photo-1581093588401-2a2a6c1a9f4f?auto=format&fit=crop&w=300&q=80",
+                    "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=300&q=80"
+
+                ]
+            },
+            3: {
+                title: "Tips for Effective Online Learning",
+                category: "Education",
+                author: "Michael Chen",
+                authorTitle: "Education Chair",
+                date: "Oct 28, 2023",
+                image: "https://via.placeholder.com/900x400",
+                content: "The shift to online learning has become increasingly prevalent, offering flexibility and accessibility to education. However, it also presents unique challenges that require specific strategies to overcome. Here are some tips for effective online learning:<br><br>1. Create a Dedicated Study Space: Designate a specific area in your home for studying. This space should be free from distractions and equipped with all the necessary materials. Having a dedicated study area helps to mentally prepare you for learning and minimizes distractions.<br><br>2. Establish a Routine: Set a consistent schedule for your online classes and study sessions. Having a routine helps to maintain discipline and ensures that you allocate sufficient time for both learning and breaks.<br><br>3. Actively Participate: Engage actively in online discussions, ask questions, and collaborate with peers. Active participation enhances understanding and retention of the material. It also helps to build a sense of community in the virtual classroom.<br><br>4. Utilize Available Resources: Take advantage of the resources provided by your instructors, such as lecture recordings, supplementary materials, and online forums. These resources can provide additional support and clarification on complex topics.<br><br>5. Practice Time Management: Online learning requires strong time management skills. Use tools like calendars, to-do lists, and time-tracking apps to organize your tasks and deadlines. Break larger tasks into smaller, manageable chunks to avoid feeling overwhelmed.<br><br>6. Take Regular Breaks: Avoid burnout by taking regular breaks during study sessions. Techniques like the Pomodoro Technique, which involves studying for 25 minutes and then taking a 5-minute break, can help maintain focus and productivity.<br><br>7. Stay Connected: Maintain communication with your instructors and classmates. Virtual study groups and discussion forums can provide support and motivation throughout your learning journey.",
+                gallery: [
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200"
+                ]
+            },
+            4: {
+                title: "Our Team Wins Regional Programming Contest",
+                category: "Achievements",
+                author: "Sarah Johnson",
+                authorTitle: "Team Captain",
+                date: "Oct 15, 2023",
+                image: "https://via.placeholder.com/900x400",
+                content: "We are thrilled to announce that our programming team has emerged victorious at the regional ACM International Collegiate Programming Contest (ICPC) held on October 10, 2023. This prestigious competition brought together teams from universities across the region to solve complex algorithmic problems under time constraints.<br><br>Our team, consisting of three talented students - John Doe, Jane Smith, and Mike Johnson - demonstrated exceptional problem-solving skills and teamwork throughout the five-hour contest. They successfully solved eight out of ten problems, securing first place among 45 participating teams.<br><br>The preparation for this contest was intensive, spanning several months. Our team members dedicated countless hours to practicing algorithms, data structures, and problem-solving techniques. Weekly practice sessions, mock contests, and mentorship from faculty members played a crucial role in their success.<br><br>This victory is a testament to the hard work and dedication of our team members, as well as the support and resources provided by our IEEE Computer Society Student Chapter. The team will now advance to the national level of the competition, where they will compete against other regional winners for a chance to participate in the world finals.<br><br>We congratulate our team on this remarkable achievement and wish them the best of luck in the upcoming national competition. Their success inspires all of us to strive for excellence in our academic and professional endeavors.",
+                gallery: [
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200"
+                ]
+            },
+            5: {
+                title: "Industry Expert Talk: Career Paths in AI",
+                category: "Events",
+                author: "David Wilson",
+                authorTitle: "Events Coordinator",
+                date: "Oct 5, 2023",
+                image: "https://via.placeholder.com/900x400",
+                content: "On September 28, 2023, our IEEE Computer Society Student Chapter hosted an insightful guest lecture on 'Career Paths in Artificial Intelligence' by industry experts Dr. Lisa Chen from TechCorp and Mr. Robert Johnson from AI Innovations. The event, attended by over 100 students, provided valuable insights into the rapidly evolving field of AI and the diverse career opportunities it offers.<br><br>Dr. Chen began the session by giving an overview of the current state of AI technology and its applications across various industries. She emphasized the importance of a strong foundation in mathematics, computer science, and domain-specific knowledge for aspiring AI professionals. She also discussed the different roles within the AI field, including research scientists, machine learning engineers, data scientists, and AI product managers.<br><br>Mr. Johnson shared his personal journey in the AI industry and provided practical advice for students looking to enter this field. He highlighted the significance of hands-on experience through projects, internships, and contributions to open-source initiatives. He also stressed the importance of staying updated with the latest research and developments in AI.<br><br>The interactive Q&A session that followed allowed students to clarify their doubts and seek personalized advice from the experts. Topics discussed included the ethical implications of AI, the future of AI jobs, and the skills that will be in high demand in the coming years.<br><br>The event concluded with networking opportunities, where students had the chance to connect with the speakers and other professionals in attendance. Overall, the guest lecture was highly informative and inspiring, providing students with a clearer understanding of the career paths available in AI and the steps they can take to achieve their goals.",
+                gallery: [
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200"
+                ]
+            },
+            6: {
+                title: "Introduction to Blockchain Technology",
+                category: "Technology",
+                author: "Olivia Brown",
+                authorTitle: "Technical Lead",
+                date: "Sep 20, 2023",
+                image: "https://via.placeholder.com/900x400",
+                content: "Blockchain technology has emerged as one of the most transformative innovations of the 21st century. While often associated with cryptocurrencies like Bitcoin, blockchain has far-reaching applications beyond digital currencies. At its core, a blockchain is a distributed, immutable ledger that records transactions across many computers in a way that ensures security, transparency, and decentralization.<br><br>The fundamental concept of blockchain was introduced in 2008 by an anonymous person or group known as Satoshi Nakamoto in the Bitcoin whitepaper. Since then, the technology has evolved significantly, giving rise to numerous blockchain platforms and applications.<br><br>One of the key features of blockchain is its decentralization. Unlike traditional databases controlled by a central authority, a blockchain is maintained by a network of nodes, each holding a copy of the entire ledger. This decentralization makes the system resistant to censorship and single points of failure.<br><br>Another important feature is immutability. Once a transaction is recorded on the blockchain, it cannot be altered or deleted. This is achieved through cryptographic hashing and consensus mechanisms like Proof of Work (PoW) or Proof of Stake (PoS), which ensure that all participants agree on the validity of transactions.<br><br>Beyond cryptocurrencies, blockchain technology has potential applications in supply chain management, healthcare, voting systems, intellectual property protection, and more. For example, in supply chain management, blockchain can provide transparency and traceability, allowing consumers to verify the origin and journey of products. In healthcare, it can secure patient records and enable interoperability between different healthcare providers.<br><br>Despite its potential, blockchain technology faces challenges such as scalability, energy consumption (especially with PoW), and regulatory uncertainty. However, ongoing research and development are addressing these issues, paving the way for broader adoption of blockchain technology in various sectors.",
+                gallery: [
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200"
+                ]
+            }
+        };
+        
+        // Additional blog posts for pagination demo
+        const additionalBlogData = {
+            7: {
+                title: "Machine Learning in Healthcare",
+                category: "Technology",
+                author: "Alex Thompson",
+                authorTitle: "Technical Lead",
+                date: "Sep 10, 2023",
+                image: "https://via.placeholder.com/900x400",
+                content: "Machine learning is revolutionizing healthcare by enabling more accurate diagnoses, personalized treatments, and predictive analytics. From medical imaging to drug discovery, ML algorithms are helping healthcare professionals make better decisions and improve patient outcomes.",
+                gallery: [
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200"
+                ]
+            },
+            8: {
+                title: "Web Development Trends for 2024",
+                category: "Technology",
+                author: "Emily Rodriguez",
+                authorTitle: "Web Development Lead",
+                date: "Sep 5, 2023",
+                image: "https://via.placeholder.com/900x400",
+                content: "As we approach 2024, several web development trends are emerging that will shape the future of the internet. From progressive web apps to AI-powered interfaces, these trends are redefining how we interact with web applications.",
+                gallery: [
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200",
+                    "https://via.placeholder.com/300x200"
+                ]
+            },
+            9: {
+                title: "Cybersecurity Best Practices for Students",
+                category: "Education",
+                author: "Michael Chen",
+                authorTitle: "Security Chair",
+                date: "Aug 28, 2023",
+                image: "https://via.placeholder.com/900x400",
+                content: "In today's digital world, cybersecurity is more important than ever. This article outlines essential cybersecurity practices that every student should follow to protect their personal information and stay safe online.",
+                gallery: [
+                    "https://via.placeholder.com/300x200"
+                ]
+            }
+        };
+        
+        // Combine all blog data
+        const allBlogData = {...blogData, ...additionalBlogData};
+        
+        // Category filter functionality
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const blogCards = document.querySelectorAll('.blog-card');
+        
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active button
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Filter blog cards
+                const category = btn.getAttribute('data-category');
+                blogCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            blogCards.forEach(card => {
+                const title = card.querySelector('.blog-card-title').textContent.toLowerCase();
+                const excerpt = card.querySelector('.blog-card-excerpt').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || excerpt.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Pagination functionality
+        const pageLinks = document.querySelectorAll('.page-link');
+        const pageInfo = document.querySelector('.page-info');
+        let currentPage = 1;
+        const totalPages = 3;
+        
+        // Function to update pagination display
+        function updatePagination() {
+            // Update page info
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            
+            // Update active page link
+            pageLinks.forEach(link => {
+                const page = link.getAttribute('data-page');
+                if (page === currentPage.toString()) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+        
+        // Function to load page content
+        function loadPage(page) {
+            // In a real application, this would fetch data from a server
+            // For this demo, we'll just show a message
+            console.log(`Loading page ${page}`);
+            
+            // Update current page
+            currentPage = page;
+            
+            // Update pagination display
+            updatePagination();
+            
+            // If navigating to page 2 or 3, show additional blog cards
+            if (page === 2) {
+                // Add additional blog cards for page 2
+                const blogContainer = document.getElementById('blogContainer');
+                
+                // Clear existing cards
+                blogContainer.innerHTML = '';
+                
+                // Add cards for page 2
+                for (let i = 7; i <= 9; i++) {
+                    const blog = allBlogData[i];
+                    if (blog) {
+                        const card = document.createElement('div');
+                        card.className = 'blog-card';
+                        card.setAttribute('data-category', blog.category.toLowerCase());
+                        card.setAttribute('data-id', i);
+                        
+                        card.innerHTML = `
+                            <div class="blog-card-image" style="background-image: url('${blog.image}');">
+                            </div>
+                            <div class="blog-card-content">
+                                <span class="blog-card-category">${blog.category}</span>
+                                <h3 class="blog-card-title">${blog.title}</h3>
+                                <p class="blog-card-excerpt">${blog.content.substring(0, 120)}...</p>
+                                <div class="blog-card-meta">
+                                    <div class="blog-card-author">
+                                        <img src="https://via.placeholder.com/30x30" alt="Author" class="author-avatar">
+                                        <span>${blog.author}</span>
+                                    </div>
+                                    <div class="blog-card-date">
+                                        <i class="far fa-calendar"></i>
+                                        <span>${blog.date}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Add click event listener
+                        card.addEventListener('click', () => {
+                            openBlogModal(i);
+                        });
+                        
+                        blogContainer.appendChild(card);
+                    }
+                }
+            } else if (page === 3) {
+                // Add a message for page 3 (since we don't have more blog data)
+                const blogContainer = document.getElementById('blogContainer');
+                blogContainer.innerHTML = '<div class="text-center py-5"><h3>No more blog posts available</h3><p class="text-muted">Check back later for more updates!</p></div>';
+            } else {
+                // Reset to original cards for page 1
+                location.reload();
+            }
+        }
+        
+        // Add click event listeners to pagination links
+        pageLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const page = link.getAttribute('data-page');
+                
+                if (page === 'prev') {
+                    if (currentPage > 1) {
+                        loadPage(currentPage - 1);
+                    }
+                } else if (page === 'next') {
+                    if (currentPage < totalPages) {
+                        loadPage(currentPage + 1);
+                    }
+                } else {
+                    loadPage(parseInt(page));
+                }
+            });
+        });
+        
+        // Blog modal functionality
+        const blogModal = document.getElementById('blogModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalImage = document.getElementById('modalImage');
+        const modalCategory = document.getElementById('modalCategory');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalAuthorName = document.getElementById('modalAuthorName');
+        const modalAuthorTitle = document.getElementById('modalAuthorTitle');
+        const modalAuthorAvatar = document.getElementById('modalAuthorAvatar');
+        const modalDate = document.getElementById('modalDate');
+        const modalContent = document.getElementById('modalContent');
+        const modalGallery = document.getElementById('modalGallery');
+        
+        // Function to open blog modal
+        function openBlogModal(blogId) {
+            const blog = allBlogData[blogId];
+            
+            if (blog) {
+                // Populate modal with blog data
+                modalImage.style.backgroundImage = `url('${blog.image}')`;
+                modalCategory.textContent = blog.category;
+                modalTitle.textContent = blog.title;
+                modalAuthorName.textContent = blog.author;
+                modalAuthorTitle.textContent = blog.authorTitle;
+                modalDate.textContent = blog.date;
+                modalContent.innerHTML = blog.content;
+                
+                // Populate gallery
+                modalGallery.innerHTML = '';
+                blog.gallery.forEach(imageUrl => {
+                    const img = document.createElement('div');
+                    img.className = 'gallery-image';
+                    img.style.backgroundImage = `url('${imageUrl}')`;
+                    modalGallery.appendChild(img);
+                });
+                
+                // Show modal
+                blogModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        // Open modal when clicking on a blog card
+        document.querySelectorAll('.blog-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const blogId = card.getAttribute('data-id');
+                openBlogModal(blogId);
+            });
+        });
+        
+        // Close modal
+        modalClose.addEventListener('click', closeModal);
+        
+        function closeModal() {
+            blogModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside the modal content
+        window.addEventListener('click', (e) => {
+            if (e.target === blogModal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

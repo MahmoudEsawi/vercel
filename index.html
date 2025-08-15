@@ -1,0 +1,3115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEEE CS TTU Chapter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* All your existing CSS remains the same */
+        :root {
+            --trace-color: #00629B; /* Blue for light mode */
+            --trace-glow: 0 0 15px 3px var(--trace-color);
+            --trace-duration: 4s; /* Total animation duration */
+            --primary-color: #00629B;
+            --secondary-color: #FF6900;
+            --accent-color: #5C87A2;
+            --light-color: #F8F9FA;
+            --dark-color: #212529;
+            --text-color: #333333;
+            --text-light: #6C757D;
+            --bg-color: #FFFFFF;
+            --card-bg: #FFFFFF;
+            --border-color: #E9ECEF;
+            --footer-bg: #212529;
+            --footer-text: #FFFFFF;
+            --section-padding: 80px 0;
+            --shadow-3d: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transform-3d: perspective(1000px);
+            --particle-color: rgba(0, 98, 155, 0.5);
+            --particle-size: 3;
+            --particle-speed: 1;
+            --connection-distance: 100;
+            --connection-color: rgba(0, 98, 155, 0.2);
+        }
+        
+        /* Orange 3D Theme */
+        body.orange-3d-theme {
+            --trace-color: #FF6900; /* Orange for orange mode */
+            --trace-glow: 0 0 20px 5px var(--trace-color);
+            --primary-color: #FF6B35;
+            --secondary-color: #F7931E;
+            --accent-color: #FFAB00;
+            --light-color: #FFF8F0;
+            --dark-color: #1A1A1A;
+            --text-color: #FFFFFF;
+            --text-light: #FFD8A8;
+            --bg-color: #0D0D0D;
+            --card-bg: rgba(255, 107, 53, 0.1);
+            --border-color: rgba(255, 107, 53, 0.3);
+            --footer-bg: #000000;
+            --footer-text: #FFFFFF;
+            --shadow-3d: 0 15px 30px rgba(255, 107, 53, 0.3);
+            --transform-3d: perspective(1000px) rotateX(5deg);
+            --particle-color: rgba(255, 107, 53, 0.8);
+            --particle-size: 4;
+            --particle-speed: 1.5;
+            --connection-distance: 120;
+            --connection-color: rgba(255, 107, 53, 0.4);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: all 0.5s ease;
+            padding-top: 80px;
+        }
+        
+        /* Add this to your CSS */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        body.loaded::before {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 3D Particle Background Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        /* Theme Toggle in Header */
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            margin-left: 15px;
+        }
+        
+        .theme-toggle {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: var(--shadow-3d);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
+        }
+        
+        body.orange-3d-theme .theme-toggle {
+            background: var(--secondary-color);
+        }
+        
+        /* 3D Effects for Orange Theme */
+        body.orange-3d-theme .card-3d {
+            transform: var(--transform-3d);
+            box-shadow: var(--shadow-3d);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        body.orange-3d-theme .card-3d:hover {
+            transform: perspective(1000px) rotateX(10deg) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.5);
+        }
+        
+        body.orange-3d-theme .btn-3d {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        body.orange-3d-theme .btn-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+        
+        body.orange-3d-theme .btn-3d:hover::before {
+            left: 100%;
+        }
+        
+        body.orange-3d-theme .btn-3d:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.6);
+        }
+        
+        /* Navbar */
+        .navbar {
+            background-color: var(--bg-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        
+        body.orange-3d-theme .navbar {
+            background-color: rgba(13, 13, 13, 0.9);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand img {
+            max-width: 180px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link {
+            color: var(--dark-color) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        body.orange-3d-theme .nav-link {
+            color: var(--text-color) !important;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .navbar-social {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .navbar-social a {
+            color: var(--dark-color);
+            font-size: 1.2rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        
+        body.orange-3d-theme .navbar-social a {
+            color: var(--text-color);
+        }
+        
+        .navbar-social a:hover {
+            color: var(--primary-color);
+            transform: scale(1.2);
+        }
+        
+        body.orange-3d-theme .navbar-social a:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 420px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body.orange-3d-theme .hero {
+            background: linear-gradient(135deg, #FF6B35, #F7931E, #FFAB00);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        body.orange-3d-theme .hero h1 {
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out 0.2s;
+            animation-fill-mode: both;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            animation-fill-mode: both;
+        }
+        
+        body.orange-3d-theme .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        .btn-primary:hover {
+            background-color: #e55a00;
+            transform: translateY(-3px);
+        }
+        
+        body.orange-3d-theme .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.6);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes flipIn {
+            from {
+                opacity: 0;
+                transform: perspective(400px) rotateY(90deg);
+            }
+            to {
+                opacity: 1;
+                transform: perspective(400px) rotateY(0deg);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* Section Styles */
+        section {
+            padding: var(--section-padding);
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            position: relative;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        body.orange-3d-theme .section-title h2 {
+            color: var(--secondary-color);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        body.orange-3d-theme .section-title h2::after {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            width: 120px;
+        }
+        
+        .section-title p {
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* About Section */
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+            animation: slideInLeft 0.8s ease-out;
+        }
+        
+        .about-text h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        body.orange-3d-theme .about-text h3 {
+            color: var(--secondary-color);
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+            animation: slideInRight 0.8s ease-out;
+        }
+        
+        .about-image img {
+            max-width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        body.orange-3d-theme .about-image img {
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.3);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Circuit animation keyframes */
+        @keyframes circuit-pulse {
+            0%, 100% { 
+                box-shadow: none;
+                opacity: 0.7;
+            }
+            50% { 
+                box-shadow: var(--trace-glow);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes circuit-travel {
+            0% { 
+                box-shadow: none;
+                opacity: 0.7;
+            }
+            50% { 
+                box-shadow: var(--trace-glow);
+                opacity: 1;
+            }
+            100% { 
+                box-shadow: none;
+                opacity: 0.7;
+            }
+        }
+        
+        .about-image {
+            position: relative;
+            display: inline-block;
+            background: var(--bg-color); /* PCB background */
+            padding: 10px;
+            animation: container-pulse var(--trace-duration) infinite;
+        }
+        
+        @keyframes container-pulse {
+            0%, 100% { 
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            }
+            50% { 
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+            }
+        }
+        
+        .about-image img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        
+        /* PCB texture effect */
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(0,255,0,0.03) 0px, transparent 1px, transparent 2px, rgba(0,255,0,0.03) 3px),
+                repeating-linear-gradient(90deg, rgba(0,255,0,0.03) 0px, transparent 1px, transparent 2px, rgba(0,255,0,0.03) 3px);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* Shared trace style */
+        .about-image span {
+            position: absolute;
+            background: var(--trace-color); /* Uses theme-appropriate color */
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        /* === TOP-LEFT CORNER === */
+        .about-image .trace-tl-v { /* vertical line */
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 40px;
+            animation: circuit-pulse var(--trace-duration) infinite 0s;
+        }
+        .about-image .trace-tl-h { /* horizontal line */
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 4px;
+            animation: circuit-pulse var(--trace-duration) infinite 0s;
+        }
+        .about-image .trace-tl-node { /* node circle */
+            top: 36px;
+            left: -4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: circuit-pulse var(--trace-duration) infinite 0s;
+        }
+        
+        /* === TOP-RIGHT CORNER === */
+        .about-image .trace-tr-v {
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 40px;
+            animation: circuit-pulse var(--trace-duration) infinite calc(var(--trace-duration) / 4);
+        }
+        .about-image .trace-tr-h {
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 4px;
+            animation: circuit-pulse var(--trace-duration) infinite calc(var(--trace-duration) / 4);
+        }
+        .about-image .trace-tr-node {
+            top: 36px;
+            right: -4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: circuit-pulse var(--trace-duration) infinite calc(var(--trace-duration) / 4);
+        }
+        
+        /* === BOTTOM-LEFT CORNER === */
+        .about-image .trace-bl-v {
+            bottom: 0;
+            left: 0;
+            width: 4px;
+            height: 40px;
+            animation: circuit-pulse var(--trace-duration) infinite calc(var(--trace-duration) / 2);
+        }
+        .about-image .trace-bl-h {
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 4px;
+            animation: circuit-pulse var(--trace-duration) infinite calc(var(--trace-duration) / 2);
+        }
+        .about-image .trace-bl-node {
+            bottom: 36px;
+            left: -4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: circuit-pulse var(--trace-duration) infinite calc(var(--trace-duration) / 2);
+        }
+        
+        /* === BOTTOM-RIGHT CORNER === */
+        .about-image .trace-br-v {
+            bottom: 0;
+            right: 0;
+            width: 4px;
+            height: 40px;
+            animation: circuit-pulse var(--trace-duration) infinite calc(var(--trace-duration) * 3 / 4);
+        }
+        .about-image .trace-br-h {
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 4px;
+            animation: circuit-pulse var(--trace-duration) infinite calc(var(--trace-duration) * 3 / 4);
+        }
+        .about-image .trace-br-node {
+            bottom: 36px;
+            right: -4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: circuit-pulse var(--trace-duration) infinite calc(var(--trace-duration) * 3 / 4);
+        }
+        
+        /* Enhanced hover effect */
+        .about-image:hover span {
+            animation-play-state: paused;
+            opacity: 1;
+            box-shadow: var(--trace-glow);
+        }
+        
+        body.orange-3d-theme .about-image img:hover {
+            transform: translateY(-15px) rotateX(5deg);
+        }
+        
+        .about-stats {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            min-width: 150px;
+            transition: all 0.3s ease;
+        }
+        
+        body.orange-3d-theme .stat-item {
+            background-color: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-3d);
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+            animation: pulse 1.5s infinite;
+        }
+        
+        body.orange-3d-theme .stat-item:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.5);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        body.orange-3d-theme .stat-number {
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(255, 171, 0, 0.5);
+        }
+        
+        .stat-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        /* Committee Members Section */
+        .committee {
+            background-color: var(--light-color);
+            padding: var(--section-padding);
+        }
+        
+        body.orange-3d-theme .committee {
+            background-color: rgba(255, 107, 53, 0.05);
+        }
+        
+        .subsection-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        body.orange-3d-theme .subsection-title {
+            color: var(--secondary-color);
+        }
+        
+        .subsection-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        body.orange-3d-theme .subsection-title::after {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .team-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .team-lead {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .team-lead img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--secondary-color);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        body.orange-3d-theme .team-lead img {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px rgba(255, 171, 0, 0.5);
+        }
+        
+        .team-lead img:hover {
+            transform: scale(1.05);
+        }
+        
+        body.orange-3d-theme .team-lead img:hover {
+            transform: scale(1.1) rotateX(5deg);
+        }
+        
+        .team-lead h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        body.orange-3d-theme .team-lead h3 {
+            color: var(--secondary-color);
+        }
+        
+        .team-lead p {
+            color: var(--text-light);
+        }
+        
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .team-member {
+            text-align: center;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            animation-fill-mode: both;
+            flex: 0 1 calc(33.333% - 30px);
+            max-width: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .team-member:nth-child(1) { animation-delay: 0.1s; }
+        .team-member:nth-child(2) { animation-delay: 0.2s; }
+        .team-member:nth-child(3) { animation-delay: 0.3s; }
+        .team-member:nth-child(4) { animation-delay: 0.4s; }
+        .team-member:nth-child(5) { animation-delay: 0.5s; }
+        .team-member:nth-child(6) { animation-delay: 0.6s; }
+        
+        body.orange-3d-theme .team-member {
+            background-color: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-3d);
+        }
+        
+        .team-member:hover {
+            transform: translateY(-5px);
+            animation: pulse 1.5s infinite;
+        }
+        
+        body.orange-3d-theme .team-member:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.5);
+        }
+        
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--secondary-color);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        body.orange-3d-theme .team-member img {
+            border-color: var(--accent-color);
+        }
+        
+        .team-member img:hover {
+            transform: scale(1.05);
+        }
+        
+        body.orange-3d-theme .team-member img:hover {
+            transform: scale(1.1) rotateX(5deg);
+        }
+        
+        .team-member h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        body.orange-3d-theme .team-member h4 {
+            color: var(--secondary-color);
+        }
+        
+        .team-member p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+        
+        .team-member-social {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: all 0.3s ease;
+            align-items: center;
+            z-index: 2;
+        }
+        
+        .team-member:hover .team-member-social {
+            opacity: 1;
+        }
+        
+        .team-member-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+            transform: translateY(10px);
+        }
+        
+        .team-member:hover .team-member-social a {
+            transform: translateY(0);
+        }
+        
+        .team-member-social a:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+        
+        .team-member-social a:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+        
+        body.orange-3d-theme .team-member-social a {
+            background-color: rgba(255, 107, 53, 0.9);
+            color: var(--text-color);
+        }
+        
+        .team-member-social a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        body.orange-3d-theme .team-member-social a:hover {
+            background-color: var(--secondary-color);
+            color: var(--bg-color);
+        }
+        
+        /* Team Leaders Section - Match Committee Members Style */
+        .team-leaders {
+            margin-bottom: 60px;
+            width: 100%;
+        }
+        
+        .team-leaders .subsection-title {
+            margin-bottom: 30px;
+        }
+        
+        .team-leaders-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        /* Events Timeline Section */
+        .events-timeline {
+            padding: var(--section-padding);
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 3px;
+        }
+        
+        body.orange-3d-theme .timeline::after {
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+        
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: var(--bg-color);
+            border: 4px solid var(--primary-color);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        body.orange-3d-theme .timeline-item::after {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        
+        .timeline-item:nth-child(even)::after {
+            left: -16px;
+        }
+        
+        .timeline-img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .timeline-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .timeline-item:hover .timeline-img img {
+            transform: scale(1.05);
+        }
+        
+        .timeline-content {
+            padding: 30px;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        body.orange-3d-theme .timeline-content {
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-3d);
+        }
+        
+        .timeline-item:hover .timeline-content {
+            transform: translateY(-10px);
+        }
+        
+        body.orange-3d-theme .timeline-item:hover .timeline-content {
+            transform: translateY(-15px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.5);
+        }
+        
+        .timeline-date {
+            display: inline-block;
+            padding: 5px 15px;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        
+        body.orange-3d-theme .timeline-date {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .timeline-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #FF6B35;
+            margin-bottom: 15px;
+            text-shadow: none;
+        }
+        
+        body.orange-3d-theme .timeline-content h3 {
+            color: var(--secondary-color);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .timeline-content p {
+            color: white;
+            margin-bottom: 20px;
+            flex-grow: 1;
+            text-shadow: none;
+        }
+        
+        body.orange-3d-theme .timeline-content p {
+            color: var(--text-color);
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Blog Preview Section */
+        .blog-preview {
+            background-color: var(--light-color);
+            padding: var(--section-padding);
+        }
+        
+        body.orange-3d-theme .blog-preview {
+            background-color: rgba(255, 107, 53, 0.05);
+        }
+        
+        .blog-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .blog-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+            flex: 0 1 calc(33.333% - 30px);
+            max-width: 380px;
+        }
+        
+        .blog-card:nth-child(1) { animation-delay: 0.1s; }
+        .blog-card:nth-child(2) { animation-delay: 0.2s; }
+        .blog-card:nth-child(3) { animation-delay: 0.3s; }
+        
+        body.orange-3d-theme .blog-card {
+            background-color: rgba(255, 107, 53, 0.1);
+            border: (--border-color);
+            box-shadow: var(--shadow-);
+d);
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        body.orange-33d-theme .blog-card:hover {
+            transform: translateY(-15px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.5);
+        }
+        
+        .blog-img {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .blog-img img {
+            width: 100%;
+            height:100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .blog-card:hover .blog-img img {
+            transform: scale(1.05);
+        }
+        
+        .blog-content {
+            padding:25px;
+        }
+        
+        .blog-date {
+            display:inline-block;
+            padding:5px 15px;
+            background-color: var(--primary-color);
+            color:white;
+            border-radius:20px;
+            font-size:0.9rem;
+            font-weight:500;
+            margin-bottom:15px;
+        }
+        
+        body.orange-3d-theme .blog-date {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .blog-content h3 {
+            font-size:1.3rem;
+            font-weight:600;
+            color: var(--primary-color);
+            margin-bottom:15px;
+        }
+        
+        body.orange-3d-theme .blog-content h3 {
+            color: var(--secondary-color);
+        }
+        
+        .blog-content p {
+            color: var(--text-color);
+            margin-bottom:20px;
+        }
+        
+        /* Resources Section */
+        .resources-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .resource-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            animation-fill-mode: both;
+            flex: 0 1 calc(25% - 30px);
+            max-width: 300px;
+        }
+        
+        .resource-card:nth-child(1) { animation-delay: 0.1s; }
+        .resource-card:nth-child(2) { animation-delay: 0.2s; }
+        .resource-card:nth-child(3) { animation-delay: 0.3s; }
+        .resource-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        body.orange-3d-theme .resource-card {
+            background-color: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-3d);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            animation: pulse 1.5s infinite;
+        }
+        
+        body.orange-3d-theme .resource-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.5);
+        }
+        
+        .resource-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        body.orange-3d-theme .resource-icon {
+            color: var(--secondary-color);
+        }
+        
+        .resource-card:hover .resource-icon {
+            transform: scale(1.1);
+        }
+        
+        body.orange-3d-theme .resource-card:hover .resource-icon {
+            transform: scale(1.2) rotateY(10deg);
+        }
+        
+        .resource-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        body.orange-3d-theme .resource-card h3 {
+            color: var(--secondary-color);
+        }
+        
+        .resource-card p {
+            color: var(--text-color);
+            margin-bottom: 20px;
+        }
+        
+        .resource-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: gap 0.3s ease;
+        }
+        
+        body.orange-3d-theme .resource-link {
+            color: var(--accent-color);
+        }
+        
+        .resource-link:hover {
+            gap: 10px;
+        }
+        
+        /* Contact Section */
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            justify-content: center;
+        }
+        
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+            animation: slideInLeft 0.8s ease-out;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        body.orange-3d-theme .contact-info h3 {
+            color: var(--secondary-color);
+        }
+        
+        .contact-info p {
+            margin-bottom: 30px;
+            color: var(--text-color);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-icon {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-top: 5px;
+        }
+        
+        body.orange-3d-theme .contact-icon {
+            color: var(--accent-color);
+        }
+        
+        .contact-text h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        body.orange-3d-theme .contact-text h4 {
+            color: var(--secondary-color);
+        }
+        
+        .contact-text p {
+            margin: 0;
+            color: var(--text-light);
+        }
+        
+        .contact-form {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            animation: slideInRight 0.8s ease-out;
+        }
+        
+        body.orange-3d-theme .contact-form {
+            background-color: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-3d);
+        }
+        
+        .contact-form:hover {
+            transform: translateY(-5px);
+        }
+        
+        body.orange-3d-theme .contact-form:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.5);
+        }
+        
+        .contact-form h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        body.orange-3d-theme .contact-form h3 {
+            color: var(--secondary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        body.orange-3d-theme .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--border-color);
+            color: var(--text-color);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 98, 155, 0.1);
+            outline: none;
+        }
+        
+        body.orange-3d-theme .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Form message styling */
+        .form-message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .form-message.success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+        
+        .form-message.error {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #212529 0%, #00629B 50%, #f8f9fa 100%);
+            color: var(--footer-text);
+            padding: 50px 0 20px;
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        body.orange-3d-theme footer {
+            background: linear-gradient(135deg, #000000 0%, #FF6B35 50%, #0A0A0A 100%);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+        
+        .footer-logo {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-logo img {
+            max-width: 180px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-logo p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        body.orange-3d-theme .footer-social a {
+            background-color: rgba(255, 107, 53, 0.2);
+        }
+        
+        .footer-social a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .footer-links {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-links h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        body.orange-3d-theme .footer-links h4 {
+            color: var(--secondary-color);
+        }
+        
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary-color);
+        }
+        
+        body.orange-3d-theme .footer-links h4::after {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+            display: inline-block;
+        }
+        
+        body.orange-3d-theme .footer-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-contact {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-contact h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        body.orange-3d-theme .footer-contact h4 {
+            color: var(--secondary-color);
+        }
+        
+        .footer-contact h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary-color);
+        }
+        
+        body.orange-3d-theme .footer-contact h4::after {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info-item i {
+            color: var(--secondary-color);
+            margin-top: 5px;
+        }
+        
+        body.orange-3d-theme .contact-info-item i {
+            color: var(--accent-color);
+        }
+        
+        .contact-info-item p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+        }
+        
+        body.orange-3d-theme .back-to-top {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+        
+        body.orange-3d-theme .back-to-top:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.6);
+        }
+        
+        /* 3D Floating Elements for Orange Theme */
+        body.orange-3d-theme .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.8), rgba(255, 107, 53, 0.2));
+            filter: blur(5px);
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        .floating-1 {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-2 {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .floating-3 {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        /* Modal Styles */
+        .event-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .event-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideInUp 0.4s ease;
+            position: relative;
+        }
+        
+        body.orange-3d-theme .modal-content {
+            background-color: rgba(13, 13, 13, 0.95);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 30px rgba(255, 107, 53, 0.5);
+        }
+        
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        body.orange-3d-theme .modal-header {
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        body.orange-3d-theme .modal-title {
+            color: var(--secondary-color);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            color: var(--primary-color);
+        }
+        
+        body.orange-3d-theme .modal-close {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        body.orange-3d-theme .modal-close:hover {
+            color: var(--accent-color);
+            transform: scale(1.2);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+        }
+        
+        .modal-meta-item i {
+            color: var(--secondary-color);
+        }
+        
+        body.orange-3d-theme .modal-meta-item i {
+            color: var(--accent-color);
+        }
+        
+        .modal-description {
+            margin-bottom: 30px;
+            line-height: 1.8;
+            color: var(--text-color);
+        }
+        
+        .modal-details {
+            background-color: var(--light-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        body.orange-3d-theme .modal-details {
+            background-color: rgba(255, 107, 53, 0.1);
+        }
+        
+        .modal-details h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        body.orange-3d-theme .modal-details h4 {
+            color: var(--secondary-color);
+        }
+        
+        .modal-details ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        
+        .modal-details li {
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+        
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        
+        body.orange-3d-theme .modal-footer {
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .modal-btn-close {
+            background-color: #333333;
+            color: #ffffff;
+        }
+        
+        .modal-btn-close:hover {
+            background-color: #222222;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .featured-event {
+                flex-direction: column;
+            }
+            
+            .featured-event-image {
+                min-height: 250px;
+            }
+            
+            .event-card, .team-member {
+                flex: 0 1 calc(50% - 20px);
+            }
+            
+            .resource-card {
+                flex: 0 1 calc(50% - 30px);
+            }
+            
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+                margin-bottom: 60px;
+            }
+            
+            .timeline-item::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            
+            .timeline-item:nth-child(even) {
+                left: 0%;
+            }
+            
+            .timeline-item:nth-child(even)::after {
+                left: 21px;
+            }
+            
+            .timeline-item:nth-child(even)::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-nav {
+                text-align: center;
+                margin-top: 10px;
+            }
+            
+            .navbar-nav .nav-item {
+                margin: 5px 0;
+            }
+            
+            .hero {
+                padding: 80px 0;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            section {
+                padding: 60px 0;
+            }
+            
+            .section-title {
+                margin-bottom: 40px;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .about-image {
+                order: -1;
+            }
+            
+            .contact-container {
+                flex-direction: column;
+            }
+            
+            .event-card, .team-member, .resource-card {
+                flex: 0 1 100%;
+                max-width: 100%;
+            }
+            
+            .blog-card {
+                flex: 0 1 100%;
+                max-width: 100%;
+            }
+            
+            .team-leader-card {
+                max-width: 100%;
+            }
+            
+            .timeline-item {
+                padding-left: 50px;
+                padding-right: 10px;
+                margin-bottom: 70px;
+            }
+            
+            .timeline-content {
+                padding: 20px;
+            }
+            
+            .timeline-content h3 {
+                font-size: 1.3rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+            
+            .modal-body {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.5rem;
+            }
+            
+            .team-members {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .resources-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline-item {
+                padding-left: 40px;
+                padding-right: 10px;
+                margin-bottom: 80px;
+            }
+            
+            .timeline::after {
+                left: 20px;
+            }
+            
+            .timeline-item::after {
+                left: 9px;
+            }
+            
+            .timeline-item:nth-child(even)::after {
+                left: 9px;
+            }
+            
+            .modal-content {
+                width: 98%;
+            }
+            
+            .modal-header {
+                padding: 15px 20px;
+            }
+            
+            .modal-title {
+                font-size: 1.5rem;
+            }
+            
+            .modal-body {
+                padding: 15px;
+            }
+            
+            .modal-image {
+                height: 200px;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .modal-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Particle Background Canvas -->
+    <canvas id="particle-canvas"></canvas>
+    
+    <!-- 3D Floating Elements (visible only in orange 3D theme) -->
+    <div class="floating-element floating-1" style="display: none;"></div>
+    <div class="floating-element floating-2" style="display: none;"></div>
+    <div class="floating-element floating-3" style="display: none;"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top" style="position: fixed;">
+        <div class="container">
+            <a class="navbar-brand" href="#home">
+                <img src="images/CS LOGO-01.png" alt="IEEE Computer Society" class="theme-logo">
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#committee">Committee</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#events-timeline">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="blog.html">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="FAQs.html">FAQs</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="d-flex align-items-center">
+                <div class="navbar-social">
+                    <a href="https://www.instagram.com/ieee.cs.ttu/?igsh=MWhqbTRuY3RoN3p1MA%3D%3D#" target="_blank" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.facebook.com/people/IEEE-Computer-Society-TTU/61557439134109/?rdid=kWzmLM99x0chYoqP&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1Ant8gdz4W%2F" target="_blank" aria-label="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/company/ieee-computer-society-ttu/" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+                
+                <div class="theme-toggle-container">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-palette"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>IEEE Computer Society Tafila Technical University</h1>
+            <p>Empowering the next generation of computing professionals through education, innovation, and collaboration.</p>
+            <a href="https://sprw.io/stt-pkgu7" target="_blank" class="btn btn-primary">Join Us</a>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Us</h2>
+                <p>We are a community of passionate students dedicated to advancing computing technology and fostering professional development.</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Who We Are</h3>
+                    <p>The IEEE Computer Society Student Chapter is a dynamic community of students passionate about computer science and technology. As part of the world's leading professional organization for computing professionals, we provide our members with opportunities for professional development, technical growth, and networking.</p>
+                    
+                    <h3>Our Mission</h3>
+                    <p>Our mission is to foster technical excellence, professional development, and community engagement among students interested in computing. We strive to bridge the gap between academic knowledge and industry practices through workshops, events, and collaborative projects.</p>
+                    
+                    <h3>What We Do</h3>
+                    <p>We organize technical workshops, guest lectures from industry professionals, hackathons, coding competitions, and social events. Our initiatives are designed to enhance technical skills, promote innovation, and build a supportive community for aspiring computer scientists.</p>
+                </div>
+                
+                <div class="about-image">
+                    <img src="images/test.jpg" alt="About Us">
+                     <!-- Top Left -->
+                        <span class="trace-tl-v"></span>
+                        <span class="trace-tl-h"></span>
+                        <span class="trace-tl-node"></span>
+                        <!-- Top Right -->
+                        <span class="trace-tr-v"></span>
+                        <span class="trace-tr-h"></span>
+                        <span class="trace-tr-node"></span>
+                        <!-- Bottom Left -->
+                        <span class="trace-bl-v"></span>
+                        <span class="trace-bl-h"></span>
+                        <span class="trace-bl-node"></span>
+                        <!-- Bottom Right -->
+                        <span class="trace-br-v"></span>
+                        <span class="trace-br-h"></span>
+                        <span class="trace-br-node"></span>
+                </div>
+            </div>
+            
+            <div class="about-stats">
+                <div class="stat-item">
+                    <div class="stat-number">68+</div>
+                    <div class="stat-label">Active Members</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Events per Year</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Industry Partners</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Years of Excellence</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Committee Members Section -->
+    <section id="committee" class="committee">
+        <div class="container">
+            <div class="section-title">
+                <h2>Meet IEEE CS TTU Committee Members</h2>
+                <p>Our dedicated team of leaders and committee members working together to advance computing education.</p>
+            </div>
+            <div class="team-container">
+                <!-- Advisor -->
+                <div class="team-lead">
+                    <img src="images/test.jpg" alt="Chapter Advisor">
+                    <h3>Dr.Maen Saleh</h3>
+                    <p>Chapter Advisor</p>
+                    <div class="team-member-social">
+                        <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Committee Members -->
+                <div class="committee-members">
+                    <h3 class="subsection-title">Committee Members</h3>
+                    <div class="team-members">
+                        <div class="team-member">
+                            <img src="images/test.jpg" alt="Committee Member">
+                            <h4>Mahmoud Al-Esawi</h4>
+                            <p>Chairman</p>
+                            <div class="team-member-social">
+                                <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://www.github.com" target="_blank" aria-label="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="team-member">
+                            <img src="images/test.jpg" alt="Committee Member">
+                            <h4>Anas alhadidi</h4>
+                            <p>Vice-Chair</p>
+                            <div class="team-member-social">
+                                <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://www.github.com" target="_blank" aria-label="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="team-member">
+                            <img src="images/test.jpg" alt="Committee Member">
+                            <h4>Nersyan</h4>
+                            <p>Secretary</p>
+                            <div class="team-member-social">
+                                <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://www.github.com" target="_blank" aria-label="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="team-member">
+                            <img src="images/test.jpg" alt="Committee Member">
+                            <h4>Rama</h4>
+                            <p>Treasurer</p>
+                            <div class="team-member-social">
+                                <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://www.github.com" target="_blank" aria-label="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <!-- Team Leaders -->
+                <div class="team-leaders">
+                    <h3 class="subsection-title">Team Leaders</h3>
+                    <div class="team-leaders-grid">
+                        <div class="team-member">
+                            <img src="images/test.jpg" alt="Team Leader">
+                            <h4>Alwaleed abutaleeb</h4>
+                            <p>PR Head</p>
+                            <div class="team-member-social">
+                                <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://www.github.com" target="_blank" aria-label="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="team-member">
+                            <img src="images/test.jpg" alt="Team Leader">
+                            <h4>Moahmmad Aboissa</h4>
+                            <p>Social Media Lead</p>
+                            <div class="team-member-social">
+                                <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://www.github.com" target="_blank" aria-label="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Events Timeline Section -->
+    <section id="events-timeline" class="events-timeline">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Events</h2>
+                <p>Discover our upcoming and past events designed to enhance your technical skills and professional network.</p>
+            </div>
+            
+            <div class="timeline">
+                <!-- Event 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-img">
+                        <img src="images/impact.jpeg" alt="Event Image">
+                    </div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">April 26, 2025</span>
+                        <h3>IMPACT 2025</h3>
+                        <p>A landmark congress in the Middle East showcasing VR, AR, XR, and Metaverse innovations, uniting over 150 participants for talks, workshops, and expert discussions</p>
+                        <a href="#" class="btn btn-primary read-more" data-event="1">Read More</a>
+                    </div>
+                </div>
+                
+                <!-- Event 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-img">
+                        <img src="images/Orphan's Eftar.jpeg " alt="Event Image">
+                    </div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Mar 20, 2025</span>
+                        <h3>Orphan's Eftar</h3>
+                        <p>A Ramadan charity event bringing joy to over 50 orphaned children with a special Iftar meal and fun activities </p>
+                        <a href="#" class="btn btn-primary read-more" data-event="2">Read More</a>
+                    </div>
+                </div>
+                
+                <!-- Event 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-img">
+                        <img src="images/tbattle.jpeg" alt="Event Image">
+                    </div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Dec 23, 2024</span>
+                        <h3>CS TECH BATTLE</h3>
+                        <p>A large-scale computing competition at TTU where students from six disciplines competed in knowledge and skill-based games.</p>
+                        <a href="#" class="btn btn-primary read-more" data-event="3">Read More</a>
+                    </div>
+                </div>
+                
+                <!-- Event 4 -->
+                <div class="timeline-item">
+                    <div class="timeline-img">
+                        <img src="images/shai.png" alt="Event Image">
+                    </div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Nov 07, 2024</span>
+                        <h3>Field Trip and Advanced Data Analytics Workshop at SHAI for AI</h3>
+                        <p>Connect with professionals from leading tech companies. Learn about internship opportunities, career paths, and industry trends in an informal networking setting.</p>
+                        <a href="#" class="btn btn-primary read-more" data-event="4">Read More</a>
+                    </div>
+                </div>
+                <!-- Event 5 -->
+                <div class="timeline-item">
+                    <div class="timeline-img">
+                        <img src="images/robotna.jpeg" alt="Event Image">
+                    </div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Sep 30, 2024</span>
+                        <h3>Field Trip and PCB design workshop by Robotna</h3>
+                        <p>A hands-on PCB design workshop by IEEE CS TTU and Robotna, equipping engineering students with essential skills for electronics projects and future careers.</p>
+                        <a href="#" class="btn btn-primary read-more" data-event="4">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Blog Preview Section -->
+    <section id="blog-preview" class="blog-preview">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Blog</h2>
+                <p>Stay updated with the latest news, insights, and resources from our community.</p>
+            </div>
+            
+            <div class="blog-container">
+                <!-- Blog Post 1 -->
+                <div class="blog-card">
+                    <div class="blog-img">
+                        <img src="images/test.jpg" alt="Blog Post">
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-date">October 5, 2023</span>
+                        <h3>The Future of Quantum Computing</h3>
+                        <p>Exploring the potential impact of quantum computing on various industries and what it means for the future of technology.</p>
+                        <a href="blog.html" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+                
+                <!-- Blog Post 2 -->
+                <div class="blog-card">
+                    <div class="blog-img">
+                        <img src="images/test.jpg" alt="Blog Post">
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-date">September 28, 2023</span>
+                        <h3>Building a Career in Cybersecurity</h3>
+                        <p>Essential skills, certifications, and career paths for students interested in pursuing a career in cybersecurity.</p>
+                        <a href="blog.html" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+                
+                <!-- Blog Post 3 -->
+                <div class="blog-card">
+                    <div class="blog-img">
+                        <img src="images/test.jpg" alt="Blog Post">
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-date">September 15, 2023</span>
+                        <h3>Web Development Trends in 2023</h3>
+                        <p>Discover the latest trends and technologies shaping the world of web development this year.</p>
+                        <a href="blog.html" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="blog.html" class="btn btn-primary btn-lg">Explore All Blog Posts</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contact Us</h2>
+                <p>Get in touch with us for any questions, collaborations, or membership inquiries.</p>
+            </div>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Get In Touch</h3>
+                    <p>We'd love to hear from you! Reach out to us for any questions, collaborations, or membership inquiries.</p>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>Location</h4>
+                            <p>Tafila , Jordan</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>Email</h4>
+                            <p>ieeecsttu@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Send Us a Message</h3>
+                    <div id="form-message" class="form-message"></div>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="images/CS LOGO-01.png" alt="IEEE Computer Society" class="theme-logo">
+                    <p>Empowering the next generation of computing professionals through education, innovation, and collaboration.</p>
+                    <div class="footer-social">
+                        <a href="https://www.instagram.com/ieee.cs.ttu/?igsh=MWhqbTRuY3RoN3p1MA%3D%3D#" target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/people/IEEE-Computer-Society-TTU/61557439134109/?rdid=kWzmLM99x0chYoqP&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1Ant8gdz4W%2F" target="_blank" aria-label="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/company/ieee-computer-society-ttu/" target="_blank" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#committee">Committee</a></li>
+                        <li><a href="#events-timeline">Events</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <div class="contact-info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>Tafila , Jordan</p>
+                    </div>
+                    <div class="contact-info-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>ieeecsttu@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 IEEE Computer Society Student Chapter, TTU. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+    
+    <!-- Event Modal -->
+    <div class="event-modal" id="eventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Event Title</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="images/impact.jpeg" alt="Event Image" class="modal-image" id="modalImage">
+                <div class="modal-meta">
+                    <div class="modal-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span id="modalDate">Event Date</span>
+                    </div>
+                    <div class="modal-meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span id="modalTime">Event Time</span>
+                    </div>
+                    <div class="modal-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="modalLocation">Event Location</span>
+                    </div>
+                </div>
+                <div class="modal-description" id="modalDescription">
+                    Event description will be loaded here.
+                </div>
+                <div class="modal-details">
+                    <h4>Event Details</h4>
+                    <ul id="modalDetailsList">
+                        <li>Detail 1</li>
+                        <li>Detail 2</li>
+                        <li>Detail 3</li>
+                        <li>Detail 4</li>
+                        <li>Detail 5</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-close" id="modalCloseBtn">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize EmailJS with your public key
+        (function() {
+            emailjs.init("r97yCQEk1unlPdrsQ"); // Replace with your EmailJS public key
+        })();
+      
+        // Canvas-based 3D particle background
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        setCanvasSize();
+        window.addEventListener('resize', setCanvasSize);
+        
+        // Particle class
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.color = getComputedStyle(document.documentElement).getPropertyValue('--particle-color');
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Bounce off edges
+                if (this.x < 0 || this.x > canvas.width) {
+                    this.speedX = -this.speedX;
+                }
+                if (this.y < 0 || this.y > canvas.height) {
+                    this.speedY = -this.speedY;
+                }
+            }
+            
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        // Create particles
+        const particles = [];
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+        
+        // Draw connections between particles
+        function drawConnections() {
+            const connectionDistance = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--connection-distance'));
+            const connectionColor = getComputedStyle(document.documentElement).getPropertyValue('--connection-color');
+            
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < connectionDistance) {
+                        const opacity = 1 - distance / connectionDistance;
+                        ctx.strokeStyle = connectionColor.replace('0.2', opacity * 0.2);
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw particles
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            // Draw connections
+            drawConnections();
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const floatingElements = document.querySelectorAll('.floating-element');
+        const themeLogos = document.querySelectorAll('.theme-logo');
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('orange-3d-theme');
+            
+            // Update particle colors based on theme
+            particles.forEach(particle => {
+                particle.color = getComputedStyle(document.documentElement).getPropertyValue('--particle-color');
+            });
+            
+            // Show/hide floating elements based on theme
+            if (body.classList.contains('orange-3d-theme')) {
+                floatingElements.forEach(element => {
+                    element.style.display = 'block';
+                });
+                
+                // Change logo to orange version
+                themeLogos.forEach(logo => {
+                    logo.src = 'images/CS LOGO Orange-01.png';
+                });
+            } else {
+                floatingElements.forEach(element => {
+                    element.style.display = 'none';
+                });
+                
+                // Change logo to basic version
+                themeLogos.forEach(logo => {
+                    logo.src = 'images/CS LOGO-01.png';
+                });
+            }
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const navbarCollapse = document.querySelector('.navbar-collapse');
+                    if (navbarCollapse.classList.contains('show')) {
+                        navbarCollapse.classList.remove('show');
+                    }
+                }
+            });
+        });
+        
+        // Back to top button
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Form submission with EmailJS
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading message
+            const formMessage = document.getElementById('form-message');
+            formMessage.style.display = 'block';
+            formMessage.className = 'form-message';
+            formMessage.textContent = 'Sending your message...';
+            
+            // Send the form using EmailJS
+            emailjs.sendForm('service_vthue67', 'template_54owl4j', this)
+                .then(function(response) {
+                    // Show success message
+                    formMessage.className = 'form-message success';
+                    formMessage.textContent = 'Your message has been sent successfully!';
+                    
+                    // Reset the form
+                    document.getElementById('contactForm').reset();
+                    
+                    // Hide message after 5 seconds
+                    setTimeout(() => {
+                        formMessage.style.display = 'none';
+                    }, 5000);
+                }, function(error) {
+                    // Show error message
+                    formMessage.className = 'form-message error';
+                    formMessage.textContent = 'Failed to send your message. Please try again later.';
+                    
+                    // Hide message after 5 seconds
+                    setTimeout(() => {
+                        formMessage.style.display = 'none';
+                    }, 5000);
+                });
+        });
+        
+        // Add this to your JavaScript
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+        
+        // Timeline scroll animation
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        
+        const checkTimelineItems = () => {
+            const triggerBottom = window.innerHeight / 5 * 4;
+            
+            timelineItems.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                
+                if (itemTop < triggerBottom) {
+                    item.classList.add('visible');
+                } else {
+                    item.classList.remove('visible');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', checkTimelineItems);
+        checkTimelineItems(); // Check on initial load
+        
+        // Event Modal functionality
+        const eventModal = document.getElementById('eventModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        
+        // Event data
+        const eventData = {
+            1: {
+                title: "Impact Congress 2024 – First Metaverse & Immersive Technologies Event in the Middle East",
+                date: "April 26, 2025",
+                time: "09:00 AM - 5:00 PM",
+                location: "Olive Tree Hotel, Amman, Jordan",
+                image: "images/impact.jpeg",
+                description: "MPACT 2025 was a groundbreaking congress in the Middle East focusing on VR, AR, XR, and Metaverse technologies. Organized by IEEE CS TTU with support from industry partners, the event brought together over 150 participants, including students, experts, and academics, to explore the future of immersive technologies through keynote speeches, technical sessions, and hands-on workshops.",
+                details: [
+                    "Opening ceremony with industry and academic leaders",
+                    "Technical sessions on Web3, VR, AR, MR, and XR fundamentals",
+                    "Workshops on Metaverse Industry Applications, AI in Robotics, and VR in the Energy Sector",
+                    "Sessions on Metaverse in Gaming, Engineering, and AI in Extended Reality",
+                    "Special workshops on Metaverse in Medicine, Education, and Tourism & Travel",
+                    "Panel discussion on the future of the Metaverse",
+                    "Interactive booths, live activities, and networking opportunities"
+                ]
+            },
+            2: {
+                title: "Orphan's Eftar",
+                date: "Mar 20, 2025",
+                time: " 05:00 PM - 09:00 PM",
+                location: "AlRaya Mall, Amman, Jordan",
+                image: "images/ramadan.png",
+                description: "The IEEE Computer Society – Tafila Technical University Student Branch, in collaboration with KAIRA Organization, organized a heartfelt charity event during Ramadan, bringing joy and memorable experiences to over 50 orphaned children through a special Iftar and recreational activities.",
+                details: [
+                    "Collaboration between IEEE CS TTU and KAIRA Organization",
+                    "Iftar meal for over 50 orphaned children",
+                    "Fun and games at the mall's amusement center",
+                    "Active engagement and interaction with the children",
+                    "Strengthening humanitarian values among student members"
+                ]
+            },
+            3: {
+                title: "CS TECH BATTLE",
+                date: "Dec 23, 2024",
+                time: "10:00 AM - 01:30 PM ",
+                location: "Tafila Technical Universty , Building: college of engineering ,Room Number: potash theater",
+                image: "images/techmodel.png",
+                description: "The IEEE Computer Society at Tafila Technical University hosted the highly anticipated CS TECH BATTLE, a large-scale competition bringing together students from various computing disciplines to showcase their skills, knowledge, and teamwork. Featuring inspiring speeches, exciting game-based challenges, and a thrilling finale, the event celebrated innovation, collaboration, and academic excellence.",
+                details: [
+                    "Organized by IEEE Computer Society – Tafila Technical University",
+                    "Inspiring opening speeches by: Prof. Bassam Almahasneh – University President, Dr. Nancy Ajarmeh – Counselor of the IEEE Student Branch, Saif Alqdessi – Chair of the IEEE CS Chapter",
+                    "Sponsored by Morganite School, with a special physics session and interactive demonstrations",
+                    "6 competing teams representing computing majors: Computer Engineering (CE), Intelligent Systems Engineering (ISE), Artificial Intelligence (AI), Cybersecurity (CYS), Computing Smart Devices (CSD), Computer Information Systems (CIS)",
+                    "Competition Rounds: First Round – 'The Bell' game for all six teams; Semi-Finals – 'The Bell', 'How Much Do You Know?', and 'Family Feud' for top 4 teams; Final Round – AI vs. CIS in all three games with CIS crowned champions",
+                    "Led and presented by IEEE CS member Leen Alnaqrash",
+                    "Strengthened collaboration between students, faculty, and industry partners",
+                    "Set a benchmark for future IEEE CS events at TTU"
+                ]
+            },
+            4: {
+                title: "Field Trip and Advanced Data Analytics Workshop at SHAI for AI",
+                date: "Nov 07, 2024",
+                time: "10:00 AM  - 01:00 PM",
+                location: "SHAI for AI, Amman, Jordan",
+                image: "images/shai.png",
+                description: "providing members with the opportunity to explore a leading AI company in the Middle East. The visit introduced students to real-world applications of AI and data analytics, offering insights into the industry's work environment and practices.",
+                details: [
+                    "Introduction to SHAI for AI's cutting-edge AI projects",
+                    "Fostering connections between students and AI professionals",
+                    "Hands-on workshop on advanced data analytics techniques",
+                    "Facility tour with insights into operations and projects",
+                    "Guided training by industry experts in sophisticated data analysis methods",
+                    "Enhanced understanding of AI's role in the region",
+                    "Inspiration for pursuing careers in AI",
+                    "Future plans to organize more field trips and workshops with tech companies across Jordan"
+                ]
+            },
+            5: {
+                title: "Field Trip and PCB design workshop by Robotna",
+                date: "Sep 30, 2024",
+                time: "10:00 AM - 01:00 PM",
+                location: "Robotna, Amman, Jordan",
+                image: "images/robotna.jpeg",
+                description: "A hands-on PCB design workshop by IEEE CS TTU and Robotna, equipping engineering students with essential skills for electronics projects and future careers.",
+                details: [
+                    "Collaboration between IEEE CS TTU and Robotna",
+                    "Hands-on workshop on PCB design fundamentals",
+                    "Practical training on designing and fabricating PCBs",
+                    "Emphasis on real-world applications in electronics projects",
+                    "Opportunity to learn from industry experts at Robotna"
+                ]
+            }
+        };
+        
+        // Open modal function
+        function openModal(eventId) {
+            const event = eventData[eventId];
+            if (event) {
+                document.getElementById('modalTitle').textContent = event.title;
+                document.getElementById('modalDate').textContent = event.date;
+                document.getElementById('modalTime').textContent = event.time;
+                document.getElementById('modalLocation').textContent = event.location;
+                document.getElementById('modalImage').src = event.image;
+                document.getElementById('modalDescription').textContent = event.description;
+                
+                // Populate details list
+                const detailsList = document.getElementById('modalDetailsList');
+                detailsList.innerHTML = '';
+                event.details.forEach(detail => {
+                    const li = document.createElement('li');
+                    li.textContent = detail;
+                    detailsList.appendChild(li);
+                });
+                
+                eventModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+            }
+        }
+        
+        // Close modal function
+        function closeModal() {
+            eventModal.classList.remove('active');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        }
+        
+        // Event listeners for modal
+        document.querySelectorAll('.read-more').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const eventId = this.getAttribute('data-event');
+                openModal(eventId);
+            });
+        });
+        
+        modalClose.addEventListener('click', closeModal);
+        modalCloseBtn.addEventListener('click', closeModal);
+        
+        // Close modal when clicking outside the modal content
+        eventModal.addEventListener('click', function(e) {
+            if (e.target === eventModal) {
+                closeModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && eventModal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
